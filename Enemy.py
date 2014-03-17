@@ -41,8 +41,7 @@ class Enemy(pygame.sprite.Sprite):
     Block Collision
     """
     def collide(self, xvel, yvel, blocks):
-        for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:
-            
+        for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:            
             # Check for collision on the sides
             if xvel > 0:
                 # going -->
@@ -102,8 +101,8 @@ class Enemy(pygame.sprite.Sprite):
                 self.vel_y = Physics.terminal_gravity
             
         # If not moving left or right, stop.
-      #  if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
-      #     self.vel_x = 0
+        #  if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+        #     self.vel_x = 0
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x

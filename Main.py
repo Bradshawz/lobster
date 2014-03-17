@@ -42,7 +42,11 @@ for spawner in game_map.get_spawner():
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player = Player("lobster_standing.png", game_map.get_player_pos()) # Create the player Sprite
+player_anims = {"standing" : ["lobster_standing.png"],
+                "walking"  : ["lobster_walking_0.png",
+                              "lobster_walking_1.png"]
+                }
+player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create an enemy group
