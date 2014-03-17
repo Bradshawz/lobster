@@ -6,6 +6,7 @@ from Player import *
 from Block import *
 from Enemy import *
 from Map import *
+from Spawn import *
 
 # Init pygame & create a screen
 pygame.init()
@@ -28,6 +29,10 @@ game_map = Map("getonmy.lvl")
 blockGroup = pygame.sprite.Group()
 for block in game_map.get_blocks():
     block.add(blockGroup)
+spawnerGroup = pygame.sprite.Group()
+for spawner in game_map.get_spawner():
+    spawner.add(spawnerGroup)
+
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
@@ -66,10 +71,7 @@ while True:
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
-#     if pygame.time.get_ticks() != 0:
-#         enemy = Enemy("enemy_tmp.png") # Create the enemy
-#         enemy.add(enemyGroup) # Add the enemy Sprite to the Group
-    
+
     # --------------------------------------------
     # Redraw everything on the screen
     # --------------------------------------------
