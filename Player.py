@@ -62,7 +62,8 @@ class Player(pygame.sprite.Sprite):
             
             # Check for falling collision
             if yvel > 0:
-                if self.rect.bottom - yvel < block.rect.bottom:
+                #TODO
+                if (block.can_jump_through and self.rect.bottom - yvel < block.rect.bottom):
                     self.rect.bottom = block.rect.top
                     self.on_ground = True
                     self.vel_y = 0
