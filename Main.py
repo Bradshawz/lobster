@@ -6,7 +6,7 @@ from Player import *
 from Block import *
 from Enemy import *
 from Map import *
-from Spawn import *
+from Spawner import *
 
 # Init pygame & create a screen
 pygame.init()
