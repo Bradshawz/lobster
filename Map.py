@@ -1,4 +1,5 @@
 from Block import *
+from Spawner import *
 from pygame.sprite import *
 
 class Map:
