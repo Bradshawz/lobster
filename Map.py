@@ -36,6 +36,7 @@ class Map:
         """
         self.filename = filename
         self.block_list = []
+        self.spawner_list = []
         self.player_pos = (0,0)
         
         # Iterate over each row in the map
@@ -74,7 +75,8 @@ class Map:
 
                     # Spawner
                     if char == 's':
-                        self.spawner_list = (cur_x, cur_y)
+                        spawner = Spawner(self.char_to_filename[char], cur_x, cur_y)
+                        self.spawner_list.append(spawner)
                         
                 cur_x += 16
                 
