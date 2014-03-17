@@ -1,4 +1,5 @@
 import pygame
+from Enemy import Enemy
 
 class Spawner(pygame.sprite.Sprite):
     """
@@ -28,10 +29,12 @@ class Spawner(pygame.sprite.Sprite):
         
         self.rect.x = x
         self.rect.y = y
+        self.spawnnumber = 3000
 
 
-    def Spawn():
-        if pygame.time.get_ticks() != 0:
-            enemy = Enemy("enemy_tmp.png") # Create the enemy
+    def spawn(self, enemyGroup):
+        if pygame.time.get_ticks()//self.spawnnumber != 0:
+            print(pygame.time.get_ticks()/self.spawnnumber)
+            enemy = Enemy("enemy_tmp.png", self.rect.x, self.rect.y) # Create the enemy
             enemy.add(enemyGroup) # Add the enemy Sprite to the Group
-    
+            self.spawnnumber += 3000

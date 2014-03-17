@@ -10,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
     """
     BASE_MOVE_SPEED = 1
 
-    def __init__(self, image_filename):
+    def __init__(self, image_filename, pos_x, pos_y):
         """
         Pass in the filename of the image to represent
         this enemy.
@@ -26,7 +26,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_filename).convert_alpha()
         
         # Fetch the rectangle object that has the dimensions of the image
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect(center=(pos_x,pos_y))
         
         # ------------------------------------------------
         # Initialize enemy-specific variables
