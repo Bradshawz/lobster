@@ -28,3 +28,10 @@ class Spawner(pygame.sprite.Sprite):
         
         self.rect.x = x
         self.rect.y = y
+
+
+    def Spawn():
+        if pygame.time.get_ticks() != 0:
+            enemy = Enemy("enemy_tmp.png") # Create the enemy
+            enemy.add(enemyGroup) # Add the enemy Sprite to the Group
+    
