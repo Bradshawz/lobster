@@ -1,4 +1,3 @@
-c275-lemonade
+c275-horde
 =============
-
-Lemonade Stand
+A zombie horde game written in Python3 using pygame.
