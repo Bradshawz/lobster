@@ -10,8 +10,8 @@ f = create.render("MONSTUHS", True, (0,0,0), (255,255,255))
 img=pygame.image.load("simple.jpg").convert()
 
 while True:
-    for i in pygame.event.get():
-        if i.type == QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             exit()
 
 screen.blit(img,(0,0))
