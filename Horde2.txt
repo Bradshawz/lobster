@@ -5,7 +5,8 @@ Title: Horde
 Team Members: Ross Anderson, Andrew Bradshaw
 
 Description:
-A 2D side-view survival game. The code will use classes and inheritance to model the monsters.
+A 2D side-view survival game. The game will look like a typical Mario-style 2D side-view game. It will take place in a single room/map, and enemies will be spawned from predefined locations on the outside of the map. Enemies will chase down the player, and the player's goal will be to punch or jump on the enemies to eliminate them and surivive as long as possible. For simplicity, relative depth will be accomplished with a static z-index per class, and arbitrary depth within classes based on object creation order. 
+The code will use classes and inheritance to model the monsters.
 The project will be written in Python 3 using pygame.
 
 Milestone 1:
