@@ -19,7 +19,7 @@ game_font = pygame.font.SysFont("comicsansms",30)
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player = Player("player-tmp.png") # Create the player Sprite
+player = Player("player_tmp.png") # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
 pygame.display.update()
