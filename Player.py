@@ -1,9 +1,8 @@
 import pygame
-from pygame import Rect
 
 class Player(pygame.sprite.Sprite):
     """
-    Model for the Player character.
+    Player character.
     
     Can move, jump, attack.
     Has an image, health, rect-bounds.
@@ -34,11 +33,24 @@ class Player(pygame.sprite.Sprite):
         # ------------------------------------------------
         self.health = Player.BASE_HEALTH
         self.move_speed = Player.BASE_MOVE_SPEED
-    
-    def move(self, x, y):
-        self.move_game_coords(x, y)
         
-    def move_game_coords(self, x, y):
+    """
+    Movement
+    """
+    
+    def move_left(self):
+        self._move_game_coords(-1 * Player.BASE_MOVE_SPEED, 0)
+        
+    def move_right(self):
+        self._move_game_coords(Player.BASE_MOVE_SPEED, 0)
+    
+    def move_up(self):
+        self._move_game_coords(0, -1 * Player.BASE_MOVE_SPEED)
+        
+    def move_down(self):
+        self._move_game_coords(0, Player.BASE_MOVE_SPEED)
+        
+    def _move_game_coords(self, x, y):
         """
         Moves the player the specified number of pixels in the
         x and y direction.
@@ -48,7 +60,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += x
         self.rect.y += y
         
-    def move_std_coords(self, x, y):
+    def _move_math_coords(self, x, y):
         """
         Moves the player the specified number of pixels in the
         x and y direction.
