@@ -1,19 +1,19 @@
 import pygame
+import random
 
-class Player(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     """
-    Player character.
+    Enemy character.
     
-    Can move, jump, attack.
-    Has an image, health, rect-bounds.
+    Can move and kill the player.
+    Has an image, rect-bounds.
     """
-    BASE_HEALTH = 10
     BASE_MOVE_SPEED = 1
 
     def __init__(self, image_filename):
         """
         Pass in the filename of the image to represent
-        this player.
+        this enemy.
         """
         # ------------------------------------------------
         # Call super constructor, set image and rect
@@ -29,30 +29,43 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
         # ------------------------------------------------
-        # Initialize player-specific variables
+        # Initialize enemy-specific variables
         # ------------------------------------------------
-        self.health = Player.BASE_HEALTH
-        self.move_speed = Player.BASE_MOVE_SPEED
+        self.move_speed = Enemy.BASE_MOVE_SPEED
         
     """
     Movement
     """
     
+    
+    def move_random(self):
+        movetype = random.randint(0,3)
+        
+        if movetype == 0:
+            Enemy.move_right(self)
+        if movetype == 1:
+            Enemy.move_right(self)
+        if movetype == 2:
+            Enemy.move_down(self)
+        if movetype == 3:
+            Enemy.move_down(self)
+            
+
     def move_left(self):
-        self._move_game_coords(-1 * Player.BASE_MOVE_SPEED, 0)
+        self._move_game_coords(-1 * Enemy.BASE_MOVE_SPEED, 0)
         
     def move_right(self):
-        self._move_game_coords(Player.BASE_MOVE_SPEED, 0)
+        self._move_game_coords(Enemy.BASE_MOVE_SPEED, 0)
     
     def move_up(self):
-        self._move_game_coords(0, -1 * Player.BASE_MOVE_SPEED)
+        self._move_game_coords(0, -1 * Enemy.BASE_MOVE_SPEED)
         
     def move_down(self):
-        self._move_game_coords(0, Player.BASE_MOVE_SPEED)
+        self._move_game_coords(0, Enemy.BASE_MOVE_SPEED)
         
     def _move_game_coords(self, x, y):
         """
-        Moves the player the specified number of pixels in the
+        Moves the enemy the specified number of pixels in the
         x and y direction.
         
         y+ is DOWN, x+ is right
@@ -62,7 +75,7 @@ class Player(pygame.sprite.Sprite):
         
     def _move_math_coords(self, x, y):
         """
-        Moves the player the specified number of pixels in the
+        Moves the enemy the specified number of pixels in the
         x and y direction.
         
         y+ is UP, x+ is right

@@ -3,6 +3,7 @@ from pygame.locals import *
 from sys import exit
 
 from Player import *
+from Enemy import *
 
 # Init pygame & create a screen
 pygame.init()
@@ -21,6 +22,11 @@ game_font = pygame.font.SysFont("comicsansms",30)
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
 player = Player("player_tmp.png") # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
+
+# Create an enemy
+enemyGroup = pygame.sprite.GroupSingle() # Create the Group
+enemy = Enemy("enemy_tmp.png") # Create the enemy
+enemy.add(enemyGroup) # Add the enemy Sprite to the Group
 
 pygame.display.update()
 
@@ -53,6 +59,12 @@ while True:
             player.move(0, -1)
         if key_down[pygame.K_DOWN]:
             player.move(0, 1)
+
+
+    #--------------------------------------------
+    # Enemy Movement    
+    #--------------------------------------------
+    enemy.move_random()
     
     # --------------------------------------------
     # Redrawing
@@ -64,6 +76,6 @@ while True:
     # Redraw all Groups
     playerGroup.draw(screen)
     # enemiesGroup.draw(screen) # to be added in later
-    
+    enemyGroup.draw(screen)
     # Update the display
     pygame.display.update()
