@@ -52,13 +52,13 @@ while True:
         key_down = pygame.key.get_pressed()
         
         if key_down[pygame.K_LEFT]:
-            player.move(-1, 0)
+            player.move_left()
         if key_down[pygame.K_RIGHT]:
-            player.move(1, 0)
+            player.move_right()
         if key_down[pygame.K_UP]:
-            player.move(0, -1)
+            player.move_up()
         if key_down[pygame.K_DOWN]:
-            player.move(0, 1)
+            player.move_down()
 
 
     #--------------------------------------------
