@@ -23,10 +23,8 @@ playerGroup = pygame.sprite.GroupSingle() # Create the Group
 player = Player("player_tmp.png") # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
-# Create an enemy
-enemyGroup = pygame.sprite.GroupSingle() # Create the Group
-enemy = Enemy("enemy_tmp.png") # Create the enemy
-enemy.add(enemyGroup) # Add the enemy Sprite to the Group
+# Create an enemy group
+enemyGroup = pygame.sprite.Group() # Create the Group
 
 pygame.display.update()
 
@@ -64,8 +62,15 @@ while True:
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
-    enemy.move_random()
-    
+    for enemy in enemyGroup:
+        enemy.move_random()
+
+    #---------------------------------------------
+    # Monster Spawning
+    #---------------------------------------------
+    if pygame.time.get_ticks() != 0:
+        enemy = Enemy("enemy_tmp.png") # Create the enemy
+        enemy.add(enemyGroup) # Add the enemy Sprite to the Group
     # --------------------------------------------
     # Redrawing
     # --------------------------------------------
