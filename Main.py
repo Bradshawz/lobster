@@ -2,7 +2,9 @@ import pygame
 from pygame.locals import *
 from sys import exit
 
-import Player, Block, Enemy
+from Player import *
+from Block import *
+from Enemy import *
 
 # Window Constants, Application Constants
 # TODO refactor these into a Screen/Window/etc class

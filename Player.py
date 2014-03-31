@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         this player.
         """        
         # Call the parent class (Sprite) constructor)
-        super(pygame.sprite.Sprite, self).__init__()
+        pygame.sprite.Sprite.__init__(self)
         
         # Set the image of the player Sprite
         self.image = pygame.image.load(image_filename).convert_alpha()
