@@ -2,16 +2,15 @@ import pygame
 from pygame.locals import *
 from sys import exit
 
-import Character, Player, Block
+import Player, Block, Enemy
 
 # Window Constants, Application Constants
 # TODO refactor these into a Screen/Window/etc class
-WINDOW_HEIGHT = 480
-WINDOW_WIDTH = 640
+window_size = (640, 480)
 
 # Init pygame & create a screen
 pygame.init()
-screen = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT),0,24)
+screen = pygame.display.set_mode(window_size,0,24)
 
 # Create a clock to use to hold the framerate constant
 clock = pygame.time.Clock()
@@ -33,7 +32,10 @@ player.add(playerGroup) # Add the player Sprite to the Group
 # Create the map
 # TODO refactor this into a Map or Level class maybe, i.e. Level.load, for block in Level.blocks, etc
 blockGroup = pygame.sprite.Group()
-platform_test = Block("platform_tile_blue.png", x=WINDOW_WIDTH/2, y=WINDOW_HEIGHT/2).add(blockGroup)
+platform_test = Block("platform_tile_blue.png", x=window_size[0]/2, y=window_size[1]/2).add(blockGroup)
+
+# Create an enemy group
+enemyGroup = pygame.sprite.Group() # Create the Group
 
 # --------------------------------------------
 # Main Game Loop
@@ -57,10 +59,9 @@ while True:
         
         if key_down[pygame.K_LEFT]:
             player.accel_left()
-        elif key_down[pygame.K_RIGHT]:
+        if key_down[pygame.K_RIGHT]:
             player.accel_right()
-        else:
-            player.decel
+        
         if key_down[pygame.K_UP]:
             player.accel_up()
         if key_down[pygame.K_DOWN]:
@@ -77,6 +78,19 @@ while True:
     
     # Actually move the player to where it should be
     player.move()
+
+    #--------------------------------------------
+    # Enemy Movement    
+    #--------------------------------------------
+    for enemy in enemyGroup:
+        enemy.move_random()
+
+    #---------------------------------------------
+    # Monster Spawning
+    #---------------------------------------------
+    if pygame.time.get_ticks() != 0:
+        enemy = Enemy("enemy_tmp.png") # Create the enemy
+        enemy.add(enemyGroup) # Add the enemy Sprite to the Group
     
     # --------------------------------------------
     # Redrawing
@@ -89,7 +103,7 @@ while True:
     playerGroup.draw(screen)
     blockGroup.draw(screen)
     # enemiesGroup.draw(screen) # to be added in later
-    
+    enemyGroup.draw(screen)
     # Update the display
     pygame.display.update()
     
