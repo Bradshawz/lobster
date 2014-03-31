@@ -63,6 +63,7 @@ class Player(pygame.sprite.Sprite):
             # Check for jumping collision
             if yvel < 0:
                 self.rect.top = block.rect.bottom
+                self.vel_y = 0
     
     """
     Update player based on key input, gravity and collisions

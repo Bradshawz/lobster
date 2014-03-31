@@ -5,6 +5,7 @@ from sys import exit
 from Player import *
 from Block import *
 from Enemy import *
+from Map import *
 
 # Window Constants, Application Constants
 # TODO refactor these into a Screen/Window/etc class
@@ -32,10 +33,10 @@ player = Player("player_tmp.png") # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create the map
-# TODO refactor this into a Map or Level class maybe, i.e. Level.load, for block in Level.blocks, etc
+game_map = Map("getonmy.lvl", "block_blue.png")
 blockGroup = pygame.sprite.Group()
-platform_test = Block("block_blue.png", x=0, y=window_size[1]/2).add(blockGroup)
-platform_test2 = Block("block_blue_10.png", x=16, y=window_size[1]/2 - 16).add(blockGroup)
+for block in game_map.get_blocks():
+    block.add(blockGroup)
 
 # Create an enemy group
 enemyGroup = pygame.sprite.Group() # Create the Group
@@ -70,9 +71,9 @@ while True:
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
-    if pygame.time.get_ticks() != 0:
-        enemy = Enemy("enemy_tmp.png") # Create the enemy
-        enemy.add(enemyGroup) # Add the enemy Sprite to the Group
+#     if pygame.time.get_ticks() != 0:
+#         enemy = Enemy("enemy_tmp.png") # Create the enemy
+#         enemy.add(enemyGroup) # Add the enemy Sprite to the Group
     
     # --------------------------------------------
     # Redrawing
