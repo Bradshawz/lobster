@@ -34,7 +34,8 @@ player.add(playerGroup) # Add the player Sprite to the Group
 # Create the map
 # TODO refactor this into a Map or Level class maybe, i.e. Level.load, for block in Level.blocks, etc
 blockGroup = pygame.sprite.Group()
-platform_test = Block("platform_tile_blue.png", x=window_size[0]/2, y=window_size[1]/2).add(blockGroup)
+platform_test = Block("block_blue.png", x=0, y=window_size[1]/2).add(blockGroup)
+platform_test2 = Block("block_blue_10.png", x=16, y=window_size[1]/2 - 16).add(blockGroup)
 
 # Create an enemy group
 enemyGroup = pygame.sprite.Group() # Create the Group
@@ -55,31 +56,10 @@ while True:
     # Movement & Collisions
     # --------------------------------------------
     
-    # Player keyboard movement
-    if pygame.key.get_focused():
-        key_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
-        
-        if key_down[pygame.K_LEFT]:
-            player.accel_left()
-        if key_down[pygame.K_RIGHT]:
-            player.accel_right()
-        
-        if key_down[pygame.K_UP]:
-            player.accel_up()
-        if key_down[pygame.K_DOWN]:
-            player.accel_down()
-            
-    # Player Collision with Blocks
-    collisions = pygame.sprite.groupcollide(playerGroup, blockGroup, False, False)
-    for player_sprite, block_sprites in collisions.items():
-        for block_sprite in block_sprites:
-            # If their new rects collide, use their pixel mask to check if they really do collide
-            if pygame.sprite.collide_mask(player_sprite, block_sprite):
-                # COLLISION!
-                player_sprite.handle_static_collision(block_sprite)
-    
-    # Actually move the player to where it should be
-    player.move()
+    # Update player based on keyboard input
+    keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
+    for p in playerGroup:
+        p.update(keys_down, blockGroup.sprites())
 
     #--------------------------------------------
     # Enemy Movement    
@@ -90,9 +70,9 @@ while True:
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
-    if pygame.time.get_ticks() != 0:
-        enemy = Enemy("enemy_tmp.png") # Create the enemy
-        enemy.add(enemyGroup) # Add the enemy Sprite to the Group
+#     if pygame.time.get_ticks() != 0:
+#         enemy = Enemy("enemy_tmp.png") # Create the enemy
+#         enemy.add(enemyGroup) # Add the enemy Sprite to the Group
     
     # --------------------------------------------
     # Redrawing
@@ -104,8 +84,8 @@ while True:
     # Redraw all Groups
     playerGroup.draw(screen)
     blockGroup.draw(screen)
-    # enemiesGroup.draw(screen) # to be added in later
     enemyGroup.draw(screen)
+    
     # Update the display
     pygame.display.update()
     

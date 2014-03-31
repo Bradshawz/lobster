@@ -1,4 +1,5 @@
 import pygame
+import Physics
 
 class Player(pygame.sprite.Sprite):
     """
@@ -17,9 +18,6 @@ class Player(pygame.sprite.Sprite):
     positions: just the "new" positions. The "move" method must be called every
     frame to update the actual position to the "new" calculated position.
     """
-    HORIZONTAL_ACCEL = 1
-    VERTICAL_ACCEL = 1
-    BASE_HEALTH = 10
     
     def __init__(self, image_filename):
         """
@@ -42,27 +40,68 @@ class Player(pygame.sprite.Sprite):
         self.vel_y = 0
         
         self.on_ground = False
-        self.health = self.BASE_HEALTH
-        
+        self.jump_speed = 7
+        self.move_speed = 1
+        self.max_move_speed = 5
         
     """
-    Movement
+    Block Collision
     """
-    def accel_left(self):
-        self.vel_x -= self.HORIZONTAL_ACCEL
-    def accel_right(self):
-        self.vel_x += self.HORIZONTAL_ACCEL
-    def accel_up(self):
-        self.vel_y -= self.VERTICAL_ACCEL
-    def accel_down(self):
-        self.vel_y += self.VERTICAL_ACCEL
-    def move_x(self):
-        self.rect.x += self.vel_x
-    def move_y(self):
-        self.rect.y += self.vel_y
-    def move(self):
-        self.move_x()
-        self.move_y()
+    def collide(self, xvel, yvel, blocks):
+        for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:
+            
+            # Check for collision on the sides
+            if xvel > 0: self.rect.right = block.rect.left
+            if xvel < 0: self.rect.left = block.rect.right
+            
+            # Check for falling collision
+            if yvel > 0:
+                self.rect.bottom = block.rect.top
+                self.on_ground = True
+                self.vel_y = 0
+            
+            # Check for jumping collision
+            if yvel < 0:
+                self.rect.top = block.rect.bottom
+    
+    """
+    Update player based on key input, gravity and collisions
+    """
+    def update(self, keys, blocks):
+        # Jumping
+        if keys[pygame.K_UP] and self.on_ground:
+            self.vel_y -= self.jump_speed
+            self.on_ground = False
         
-def collide_new_rect(sprite_a, sprite_b):
-    return sprite_a.new_rect().colliderect(sprite_b.new_rect())
+        # Left/right movement
+        if keys[pygame.K_LEFT]:
+            # Go faster
+            self.vel_x -= self.move_speed
+            # But not too fast
+            if self.vel_x < -1 * self.max_move_speed:
+                self.vel_x = -1 * self.max_move_speed
+        if keys[pygame.K_RIGHT]:
+            # Go faster
+            self.vel_x += self.move_speed
+            # But not too fast
+            if self.vel_x > self.max_move_speed:
+                self.vel_x = self.max_move_speed
+        
+        # Gravity
+        if not self.on_ground:
+            self.vel_y += Physics.gravity
+            if self.vel_y > Physics.terminal_gravity: self.vel_y = Physics.terminal_gravity
+            
+        # If not moving left or right, stop.
+        if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+            self.vel_x = 0
+            
+        # Move horizontally, then check for horizontal collisions
+        self.rect.left += self.vel_x
+        self.collide(self.vel_x, 0, blocks)
+        
+        # Move vertically, then check for vertical collisions
+        self.rect.top += self.vel_y
+        self.on_ground = False
+        self.collide(0, self.vel_y, blocks)
+            
