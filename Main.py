@@ -70,9 +70,9 @@ while True:
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
-#     if pygame.time.get_ticks() != 0:
-#         enemy = Enemy("enemy_tmp.png") # Create the enemy
-#         enemy.add(enemyGroup) # Add the enemy Sprite to the Group
+    if pygame.time.get_ticks() != 0:
+        enemy = Enemy("enemy_tmp.png") # Create the enemy
+        enemy.add(enemyGroup) # Add the enemy Sprite to the Group
     
     # --------------------------------------------
     # Redrawing
@@ -82,9 +82,9 @@ while True:
     screen.blit(bg, (0,0))
     
     # Redraw all Groups
-    playerGroup.draw(screen)
     blockGroup.draw(screen)
     enemyGroup.draw(screen)
+    playerGroup.draw(screen)    
     
     # Update the display
     pygame.display.update()
