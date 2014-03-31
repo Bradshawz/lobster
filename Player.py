@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.vel_y = 0
         
         self.on_ground = False
-        self.jump_speed = 7
+        self.jump_speed = 10
         self.move_speed = 1
         self.max_move_speed = 5
         
