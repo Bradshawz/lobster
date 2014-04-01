@@ -71,7 +71,8 @@ while True:
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
-
+    for spawner in spawnerGroup:
+        spawner.spawn(enemyGroup)
     # --------------------------------------------
     # Redraw everything on the screen
     # --------------------------------------------
