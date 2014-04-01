@@ -44,24 +44,27 @@ class Map:
             for char in line:
                 # if it is not an empty space or newline
                 if char not in {' ', '\n'}:
-                    # Create the block
-                    block = Block(self.char_to_filename[char], x=cur_x, y=cur_y)
-                    
                     #===========================================================
-                    # Add special functionality based on block type 
+                    # Create the thing and add special functionality
+                    # based on the type.
                     #===========================================================
-                    if char == '-':
-                        # Jump through-able platforms
-                        block.can_jump_through = True
-                    # if char == 'somechar':
-                    #    give it some special property
-                    #    or initialize it or something
-                    #    This is where the enemies and
-                    #    players and teleporters and
-                    #    whatnot will get initialized.
                     
-                    # Add the block to the block_list
-                    self.block_list.append(block)
+                    # Blocks
+                    if char in {'-', '='}:
+                        block = Block(self.char_to_filename[char], x=cur_x, y=cur_y)
+                    
+                        if char == '-':
+                            # Jump through-able platforms
+                            block.can_jump_through = True
+                        # if char == 'somechar':
+                        #    give it some special property
+                        #    or initialize it or something
+                        #    This is where the enemies and
+                        #    players and teleporters and
+                        #    whatnot will get initialized.
+                        
+                        # Add the block to the block_list
+                        self.block_list.append(block)
                         
                 cur_x += 16
                 
@@ -73,5 +76,4 @@ class Map:
         """
         Returns a list of blocks in this map.
         """
-        return self.block_list # TODO return something useful
-        
+        return self.block_list        
