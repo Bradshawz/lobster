@@ -2,7 +2,10 @@ import pygame
 
 class Block(pygame.sprite.Sprite):
     """
-    Floors, walls, platforms, etc.    
+    Floors, walls, platforms, etc.
+    
+    Can be jumped up through if the property
+    self.can_jump_through is set to True. (False by default)
     """
 
     def __init__(self, image_filename, **optional_args):
@@ -29,3 +32,5 @@ class Block(pygame.sprite.Sprite):
             self.rect.x = optional_args['x']
         if 'y' in optional_args:
             self.rect.y = optional_args['y']
+        
+        self.can_jump_through = False

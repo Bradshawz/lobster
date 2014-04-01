@@ -19,7 +19,7 @@ class Player(pygame.sprite.Sprite):
     frame to update the actual position to the "new" calculated position.
     """
     
-    def __init__(self, image_filename):
+    def __init__(self, image_filename, bottomleft):
         """
         Pass in the filename of the image to represent
         this player.
@@ -34,7 +34,7 @@ class Player(pygame.sprite.Sprite):
         
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect()
-        self.new_rect = self.rect
+        self.rect.bottomleft = bottomleft
         
         self.vel_x = 0
         self.vel_y = 0
@@ -51,19 +51,30 @@ class Player(pygame.sprite.Sprite):
         for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:
             
             # Check for collision on the sides
-            if xvel > 0: self.rect.right = block.rect.left
-            if xvel < 0: self.rect.left = block.rect.right
+            if xvel > 0:
+                # going -->
+                if self.rect.right - xvel < block.rect.left:
+                    self.rect.right = block.rect.left
+            if xvel < 0:
+                # going <--
+                if self.rect.left - xvel > block.rect.right:
+                    self.rect.left = block.rect.right
             
             # Check for falling collision
             if yvel > 0:
-                self.rect.bottom = block.rect.top
-                self.on_ground = True
-                self.vel_y = 0
+                if self.rect.bottom - yvel < block.rect.bottom:
+                    self.rect.bottom = block.rect.top
+                    self.on_ground = True
+                    self.vel_y = 0
             
             # Check for jumping collision
             if yvel < 0:
-                self.rect.top = block.rect.bottom
-                self.vel_y = 0
+                # Check for jump-through-able block
+                if block.can_jump_through:
+                    pass
+                else:
+                    self.rect.top = block.rect.bottom
+                    self.vel_y = 0
     
     """
     Update player based on key input, gravity and collisions

@@ -5,26 +5,31 @@ class Map:
     """
     Loads a map from a file
     
-    Level file specification:
-    suffix: .lvl
-    format:
-    Each line represents a row of height 16 in game.
-    Each line consists of integer values separated by spaces.
-    The integer values represent the length of the section.
-    Sections alternate between "block" and "empty".
-    There can be any number of values on a line.
-    There should be exactly 32 rows in order to fill the 480px window height
-       as well as the ceiling and floor (which are not visible)
+    Level file specification
+    ------------------------
+    Suffix: .lvl
+    Format:
+    The file will have 30 rows, each consisting of 40 columns.
+    The bottom and top row are not visible - they are the floor and
+        ceiling that are just out of view.
+    The leftmost and rightmost column are not visible - they are the
+        left and right edge that is just out of view.
     
-    The first possible assignable value represents the square just left of the left edge
-       of the screen (this square is not visible).
+    Each character represents one 16x16 "block" in the game.
     
-    The screen is 640/480 aka 40/30 in 16x16 squares.
-    
-    A 0 on a line indicates no blocks on that row
+    Important:
+        A space represents "no block", or an empty space.
+    Characters are as follows:
+    (** Define these here and in char_to_filename dict when you add or  ***
+     ** modify tiles     
+        =    platform
+        -    platform that you can jump up through
     """
+    char_to_filename = {'=' : 'block_blue.png',
+                        '-' : 'block_yellow.png',
+                        }
     
-    def __init__(self, filename="getonmy.lvl", block_filename="block_blue.png"):
+    def __init__(self, filename="getonmy.lvl"):
         """
         Loads a map from a filename according to the Map filetype specifications.
         """
@@ -36,14 +41,23 @@ class Map:
         cur_y = -16
         level_file = open(self.filename)
         for line in level_file:
-            is_block = True
-            for length in line.split():
-                for i in range(int(length)):
-                    if is_block:
-                        self.block_list.append(Block(block_filename, x=cur_x, y=cur_y))
-                    cur_x += 16
-                # Toggle whether next value represents block or space
-                is_block = not is_block
+            for char in line:
+                # if it is not an empty space or newline
+                if char not in {' ', '\n'}:
+                    # Create the block
+                    block = Block(self.char_to_filename[char], x=cur_x, y=cur_y)
+                    
+                    # Add special functionality based on block type
+                    
+                    if char == '-':
+                        # Jump through-able platforms
+                        block.can_jump_through = True
+                    
+                    # Add the block to the block_list
+                    self.block_list.append(block)
+                        
+                cur_x += 16
+                
             cur_x = -16
             cur_y += 16
         
