@@ -109,7 +109,8 @@ class Player(pygame.sprite.Sprite):
         # Gravity
         if not self.on_ground:
             self.vel_y += Physics.gravity
-            if self.vel_y > Physics.terminal_gravity: self.vel_y = Physics.terminal_gravity
+            if self.vel_y > Physics.terminal_gravity:
+                self.vel_y = Physics.terminal_gravity
             
         # If not moving left or right, stop.
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
