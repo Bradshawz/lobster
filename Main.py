@@ -23,16 +23,16 @@ bg.fill(pygame.Color(255,255,255))
 pygame.display.set_caption("Horde")
 game_font = pygame.font.SysFont("comicsansms",30)
 
-# Create the player
-playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player = Player("player_tmp.png", (160, 160)) # Create the player Sprite
-player.add(playerGroup) # Add the player Sprite to the Group
-
 # Create the map
 game_map = Map("getonmy.lvl")
 blockGroup = pygame.sprite.Group()
 for block in game_map.get_blocks():
     block.add(blockGroup)
+
+# Create the player
+playerGroup = pygame.sprite.GroupSingle() # Create the Group
+player = Player("player_tmp.png", game_map.get_player_pos()) # Create the player Sprite
+player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create an enemy group
 enemyGroup = pygame.sprite.Group() # Create the Group

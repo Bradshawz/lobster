@@ -35,6 +35,7 @@ class Map:
         """
         self.filename = filename
         self.block_list = []
+        self.player_pos = (0,0)
         
         # Iterate over each row in the map
         cur_x = -16
@@ -65,6 +66,10 @@ class Map:
                         
                         # Add the block to the block_list
                         self.block_list.append(block)
+                    
+                    # Player
+                    if char == 'p':
+                        self.player_pos = (cur_x, cur_y)
                         
                 cur_x += 16
                 
@@ -76,4 +81,11 @@ class Map:
         """
         Returns a list of blocks in this map.
         """
-        return self.block_list        
+        return self.block_list      
+    
+    def get_player_pos(self):
+        """
+        Returns the player's bottomleft position as read
+        from the map file.
+        """
+        return self.player_pos
