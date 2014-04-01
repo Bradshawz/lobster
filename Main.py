@@ -8,12 +8,18 @@ from Enemy import *
 from Map import *
 from Spawner import *
 
+# Debug
+DEBUG = True
+
 # Init pygame & create a screen
 pygame.init()
 screen = pygame.display.set_mode((608,448),0,24)
 
 # Create a clock to use to hold the framerate constant
 clock = pygame.time.Clock()
+
+# Initialize font for printing to screen
+myfont = pygame.font.SysFont("monospace", 15)
 
 # Create a white background
 bg = pygame.Surface(screen.get_size())
@@ -90,6 +96,15 @@ while True:
     playerGroup.draw(screen)
     spawnerGroup.draw(screen)
     
+
+    # Render text for debug
+    if DEBUG:
+        label = myfont.render("fps:"+str(int(clock.get_fps()))
+                              +" monsters:"+str(len(enemyGroup)), 
+                              1, (0,0,0))
+        screen.blit(label, (20, 10))
+
+
     # Update the display
     pygame.display.update()
     
