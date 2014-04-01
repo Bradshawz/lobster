@@ -52,7 +52,7 @@ class Map:
                     
                     # Blocks
                     if char in {'-', '='}:
-                        block = Block(self.char_to_filename[char], x=cur_x, y=cur_y)
+                        block = Block(self.char_to_filename[char], cur_x, cur_y)
                     
                         if char == '-':
                             # Jump through-able platforms

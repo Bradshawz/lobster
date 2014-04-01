@@ -8,7 +8,7 @@ class Block(pygame.sprite.Sprite):
     self.can_jump_through is set to True. (False by default)
     """
 
-    def __init__(self, image_filename, **optional_args):
+    def __init__(self, image_filename, x, y):
         """
         Pass in the filename of the image to represent
         this block.
@@ -28,9 +28,7 @@ class Block(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect()
         
-        if 'x' in optional_args:
-            self.rect.x = optional_args['x']
-        if 'y' in optional_args:
-            self.rect.y = optional_args['y']
+        self.rect.x = x
+        self.rect.y = y
         
         self.can_jump_through = False
