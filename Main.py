@@ -70,7 +70,7 @@ while True:
     # Enemy Movement    
     #--------------------------------------------
     for enemy in enemyGroup:
-        enemy.move_random()
+        enemy.update(blockGroup.sprites())
 
     #---------------------------------------------
     # Monster Spawning

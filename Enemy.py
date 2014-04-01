@@ -1,5 +1,6 @@
 import pygame
 import random
+import Physics
 
 class Enemy(pygame.sprite.Sprite):
     """
@@ -28,57 +29,88 @@ class Enemy(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
         
-        # ------------------------------------------------
-        # Initialize enemy-specific variables
-        # ------------------------------------------------
-        self.move_speed = Enemy.BASE_MOVE_SPEED
+        self.move = random.randint(0,1)
+        self.vel_x = 0
+        self.vel_y = 0
+        
+        self.on_ground = False
+        self.move_speed = 1
+        self.max_move_speed = 3
         
     """
-    Movement
+    Block Collision
     """
-    
-    
-    def move_random(self):
-        movetype = random.randint(0,3)
-        
-        if movetype == 0:
-            Enemy.move_right(self)
-        if movetype == 1:
-            Enemy.move_left(self)
-        if movetype == 2:
-            Enemy.move_up(self)
-        if movetype == 3:
-            Enemy.move_down(self)
+    def collide(self, xvel, yvel, blocks):
+        for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:            
+            # Check for collision on the sides
+            if xvel > 0:
+                # going -->
+                if block.can_jump_through:
+                    if self.rect.right - xvel < block.rect.left:
+                        self.rect.right = block.rect.left
+                else:
+                    self.rect.right = block.rect.left
+            if xvel < 0:
+                # going <--
+                if block.can_jump_through:
+                    if self.rect.left - xvel > block.rect.right:
+                        self.rect.left = block.rect.right
+                else:
+                    self.rect.left = block.rect.right
             
-
-    def move_left(self):
-        self._move_game_coords(-1 * Enemy.BASE_MOVE_SPEED, 0)
-        
-    def move_right(self):
-        self._move_game_coords(Enemy.BASE_MOVE_SPEED, 0)
+            # Check for falling collision
+            if yvel > 0:
+                if self.rect.bottom - yvel < block.rect.top:
+                    self.rect.bottom = block.rect.top
+                    self.on_ground = True
+                    self.vel_y = 0
+            
+            # Check for jumping collision
+            if yvel < 0:
+                # Check for jump-through-able block
+                if block.can_jump_through:
+                    pass
+                else:
+                    if self.rect.top - yvel > block.rect.bottom:
+                        self.rect.top = block.rect.bottom
+                        self.vel_y = 0
     
-    def move_up(self):
-        self._move_game_coords(0, -1 * Enemy.BASE_MOVE_SPEED)
+    """
+    Update enemy based on key input, gravity and collisions
+    """
+    def update(self, blocks):
         
-    def move_down(self):
-        self._move_game_coords(0, Enemy.BASE_MOVE_SPEED)
+        # Left/right movement
+        if self.move == 0:
+            # Go faster
+            self.vel_x -= self.move_speed
+            # But not too fast
+            if self.vel_x < -1 * self.max_move_speed:
+                self.vel_x = -1 * self.max_move_speed
+        if self.move == 1:
+            # Go faster
+            self.vel_x += self.move_speed
+            # But not too fast
+            if self.vel_x > self.max_move_speed:
+                self.vel_x = self.max_move_speed
         
-    def _move_game_coords(self, x, y):
-        """
-        Moves the enemy the specified number of pixels in the
-        x and y direction.
+        # Gravity
+        if not self.on_ground:
+            self.vel_y += Physics.gravity
+            if self.vel_y > Physics.terminal_gravity:
+                self.vel_y = Physics.terminal_gravity
+            
+        # If not moving left or right, stop.
+        #  if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+        #     self.vel_x = 0
+            
+        # Move horizontally, then handle horizontal collisions
+        self.rect.left += self.vel_x
+        self.collide(self.vel_x, 0, blocks)
         
-        y+ is DOWN, x+ is right
-        """
-        self.rect.x += x
-        self.rect.y += y
-        
-    def _move_math_coords(self, x, y):
-        """
-        Moves the enemy the specified number of pixels in the
-        x and y direction.
-        
-        y+ is UP, x+ is right
-        """
-        self.rect.x += x
-        self.rect.y -= y
+        # Move vertically, then handle vertical collisions
+        self.rect.top += self.vel_y
+        self.on_ground = False
+        self.collide(0, self.vel_y, blocks)
+        self.move = random.randint(0,1)
+            
