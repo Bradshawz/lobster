@@ -82,7 +82,8 @@ while True:
     # Redraw all Groups
     blockGroup.draw(screen)
     enemyGroup.draw(screen)
-    playerGroup.draw(screen)    
+    playerGroup.draw(screen)
+    spawnerGroup.draw(screen)
     
     # Update the display
     pygame.display.update()
