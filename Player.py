@@ -53,17 +53,22 @@ class Player(pygame.sprite.Sprite):
             # Check for collision on the sides
             if xvel > 0:
                 # going -->
-                if self.rect.right - xvel < block.rect.left:
+                if block.can_jump_through:
+                    if self.rect.right - xvel < block.rect.left:
+                        self.rect.right = block.rect.left
+                else:
                     self.rect.right = block.rect.left
             if xvel < 0:
                 # going <--
-                if self.rect.left - xvel > block.rect.right:
+                if block.can_jump_through:
+                    if self.rect.left - xvel > block.rect.right:
+                        self.rect.left = block.rect.right
+                else:
                     self.rect.left = block.rect.right
             
             # Check for falling collision
             if yvel > 0:
-                #TODO
-                if (block.can_jump_through and self.rect.bottom - yvel < block.rect.bottom):
+                if self.rect.bottom - yvel < block.rect.top:
                     self.rect.bottom = block.rect.top
                     self.on_ground = True
                     self.vel_y = 0
@@ -74,8 +79,9 @@ class Player(pygame.sprite.Sprite):
                 if block.can_jump_through:
                     pass
                 else:
-                    self.rect.top = block.rect.bottom
-                    self.vel_y = 0
+                    if self.rect.top - yvel > block.rect.bottom:
+                        self.rect.top = block.rect.bottom
+                        self.vel_y = 0
     
     """
     Update player based on key input, gravity and collisions
@@ -109,11 +115,11 @@ class Player(pygame.sprite.Sprite):
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0
             
-        # Move horizontally, then check for horizontal collisions
+        # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
         self.collide(self.vel_x, 0, blocks)
         
-        # Move vertically, then check for vertical collisions
+        # Move vertically, then handle vertical collisions
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
