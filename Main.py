@@ -31,7 +31,7 @@ for block in game_map.get_blocks():
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player = Player("player_tmp.png", game_map.get_player_pos()) # Create the player Sprite
+player = Player("lobster_standing.png", game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create an enemy group
