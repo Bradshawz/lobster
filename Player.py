@@ -41,7 +41,7 @@ class Player(pygame.sprite.Sprite):
         
         self.anim_image = 0
         self.anim_frame_counter = 0
-        self.anim_frame_max = 60
+        self.anim_frame_max = 2
         
         # Set the collision mask based on the image
         self.mask = pygame.mask.from_surface(self.image)
@@ -80,12 +80,6 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.rect.left = block.rect.right
             
-            if xvel != 0 and self.on_ground:
-                # Animate the walking!
-                    self.anim_frame_counter = (self.anim_frame_counter + 1) % self.anim_frame_max
-                    if self.anim_frame_counter == 0:
-                        self.anim_image = (self.anim_image + 1) % len(self.images['walking'])
-                        self.image = self.images['walking'][self.anim_image]
             # Check for falling collision
             if yvel > 0:
                 if self.rect.bottom - yvel < block.rect.top:
@@ -135,6 +129,8 @@ class Player(pygame.sprite.Sprite):
         # If not moving left or right, stop.
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0
+            # Animate the standing
+            self.image = self.images['standing'][0]
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
@@ -144,4 +140,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
-            
+        
+        # Walking and Jumping Animation
+        if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
+            # Animate the walking!
+            self.anim_frame_counter = (self.anim_frame_counter + 1) % self.anim_frame_max
+            if self.anim_frame_counter == 0:
+                self.anim_image = (self.anim_image + 1) % len(self.images['walking'])
+                self.image = self.images['walking'][self.anim_image]
+        if not self.on_ground:
+            # Animate the jumping!
+                        
