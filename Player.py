@@ -19,16 +19,30 @@ class Player(pygame.sprite.Sprite):
     frame to update the actual position to the "new" calculated position.
     """
     
-    def __init__(self, image_filename, bottomleft):
+    def __init__(self, images_dict, bottomleft):
         """
         Pass in the filename of the image to represent
         this player.
+        
+        images_dict should have:
+            keys: 'standing', 'walking'
+            values: a list of image filenames
         """        
         # Call the parent class (Sprite) constructor)
         pygame.sprite.Sprite.__init__(self)
         
-        # Set the image of the player Sprite
-        self.image = pygame.image.load(image_filename).convert_alpha()
+        # Create images for all of the animations, and set the default image
+        self.images = dict()
+        for anim_type, image_filenames in images_dict.items():
+            self.images[anim_type] = []
+            for cur_image_filename in image_filenames:
+                self.images[anim_type].append(pygame.image.load(cur_image_filename).convert_alpha())
+        self.image = self.images['standing'][0]
+        
+        self.anim_image = 0
+        self.anim_frame_counter = 0
+        self.anim_frame_max = 60
+        
         # Set the collision mask based on the image
         self.mask = pygame.mask.from_surface(self.image)
         
@@ -66,6 +80,12 @@ class Player(pygame.sprite.Sprite):
                 else:
                     self.rect.left = block.rect.right
             
+            if xvel != 0 and self.on_ground:
+                # Animate the walking!
+                    self.anim_frame_counter = (self.anim_frame_counter + 1) % self.anim_frame_max
+                    if self.anim_frame_counter == 0:
+                        self.anim_image = (self.anim_image + 1) % len(self.images['walking'])
+                        self.image = self.images['walking'][self.anim_image]
             # Check for falling collision
             if yvel > 0:
                 if self.rect.bottom - yvel < block.rect.top:

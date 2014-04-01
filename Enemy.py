@@ -47,7 +47,7 @@ class Enemy(pygame.sprite.Sprite):
             Enemy.move_left(self)
         if movetype == 2:
             Enemy.move_up(self)
-        if movetype == 3
+        if movetype == 3:
             Enemy.move_down(self)
             
 
