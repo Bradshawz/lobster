@@ -27,6 +27,7 @@ class Map:
     """
     char_to_filename = {'=' : 'block_blue.png',
                         '-' : 'block_yellow.png',
+                        's' : 'castle.png'
                         }
     
     def __init__(self, filename="getonmy.lvl"):
@@ -35,6 +36,7 @@ class Map:
         """
         self.filename = filename
         self.block_list = []
+        self.spawner_list = []
         self.player_pos = (0,0)
         
         # Iterate over each row in the map
@@ -70,6 +72,11 @@ class Map:
                     # Player
                     if char == 'p':
                         self.player_pos = (cur_x, cur_y)
+
+                    # Spawner
+                    if char == 's':
+                        spawner = Spawner(self.char_to_filename[char], cur_x, cur_y)
+                        self.spawner_list.append(spawner)
                         
                 cur_x += 16
                 
@@ -89,3 +96,9 @@ class Map:
         from the map file.
         """
         return self.player_pos
+
+    def get_spawner(self):
+        """
+        Returns a list of spawners in this map.
+        """
+        return self.spawner_list
