@@ -47,11 +47,18 @@ class Map:
                     # Create the block
                     block = Block(self.char_to_filename[char], x=cur_x, y=cur_y)
                     
-                    # Add special functionality based on block type
-                    
+                    #===========================================================
+                    # Add special functionality based on block type 
+                    #===========================================================
                     if char == '-':
                         # Jump through-able platforms
                         block.can_jump_through = True
+                    # if char == 'somechar':
+                    #    give it some special property
+                    #    or initialize it or something
+                    #    This is where the enemies and
+                    #    players and teleporters and
+                    #    whatnot will get initialized.
                     
                     # Add the block to the block_list
                     self.block_list.append(block)
