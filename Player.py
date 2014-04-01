@@ -150,4 +150,4 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.images['walking'][self.anim_image]
         if not self.on_ground:
             # Animate the jumping!
-                        
+            pass
