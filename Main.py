@@ -44,7 +44,9 @@ for spawner in game_map.get_spawner():
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
 player_anims = {"standing" : ["lobster_standing.png"],
                 "walking"  : ["lobster_walking_0.png",
-                              "lobster_walking_1.png"]
+                              "lobster_walking_1.png"],
+                "jumping"  : ["lobster_jumping_0.png",
+                              "lobster_jumping_1.png"]
                 }
 player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
@@ -100,7 +102,8 @@ while True:
     # Render text for debug
     if DEBUG:
         label = myfont.render("fps:"+str(int(clock.get_fps()))
-                              +" monsters:"+str(len(enemyGroup)), 
+                              +" monsters:"+str(len(enemyGroup))
+                              +" walking_anim: " + str(playerGroup.sprites()[0].anim_frame_counter_walking), 
                               1, (0,0,0))
         screen.blit(label, (20, 10))
 

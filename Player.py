@@ -39,9 +39,12 @@ class Player(pygame.sprite.Sprite):
                 self.images[anim_type].append(pygame.image.load(cur_image_filename).convert_alpha())
         self.image = self.images['standing'][0]
         
-        self.anim_image = 0
-        self.anim_frame_counter = 0
-        self.anim_frame_max = 2
+        self.anim_image_walking = 0
+        self.anim_image_jumping = 0
+        self.anim_frame_counter_walking = 0
+        self.anim_frame_counter_jumping = 0
+        self.anim_frame_max_walking = 2
+        self.anim_frame_max_jumping = 8
         
         # Set the collision mask based on the image
         self.mask = pygame.mask.from_surface(self.image)
@@ -129,8 +132,6 @@ class Player(pygame.sprite.Sprite):
         # If not moving left or right, stop.
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0
-            # Animate the standing
-            self.image = self.images['standing'][0]
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
@@ -141,13 +142,23 @@ class Player(pygame.sprite.Sprite):
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
         
-        # Walking and Jumping Animation
-        if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
-            # Animate the walking!
-            self.anim_frame_counter = (self.anim_frame_counter + 1) % self.anim_frame_max
-            if self.anim_frame_counter == 0:
-                self.anim_image = (self.anim_image + 1) % len(self.images['walking'])
-                self.image = self.images['walking'][self.anim_image]
-        if not self.on_ground:
+        # TODO fix these anims
+        
+        # Standing Animation
+        if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
+            self.image = self.images['standing'][0]
+        # Jumping Animation
+        elif not self.on_ground:
             # Animate the jumping!
-            pass
+            self.anim_frame_counter_jumping = (self.anim_frame_counter_jumping + 1) % self.anim_frame_max_jumping
+            if self.anim_frame_counter_jumping == 0:
+                self.anim_image_jumping = (self.anim_image_jumping + 1) % len(self.images['jumping'])
+                self.image = self.images['jumping'][self.anim_image_jumping]
+        # Walking Animation
+        elif (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
+            # Animate the walking!
+            self.anim_frame_counter_walking = (self.anim_frame_counter_walking + 1) % self.anim_frame_max_walking
+            if self.anim_frame_counter_walking == 0:
+                self.anim_image_walking = (self.anim_image_walking + 1) % len(self.images['walking'])
+                self.image = self.images['walking'][self.anim_image_walking]
+        
