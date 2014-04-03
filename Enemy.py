@@ -75,26 +75,48 @@ class Enemy(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
-    
+                        
+    """
+    Collision with Player
+    """
+    def player_collide(self, player,hasSquishedSomeoneAlready):
+        if pygame.sprite.collide_rect(self, player):
+            if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
+                # Player squishes this enemy
+                player.points += 1
+                
+                # Bounce off the enemy
+                player.vel_y = player.jump_speed/-1.5
+                # TODO::Turn the enemy's animation to a "squished" animation
+                
+                # TODO::After 500ms, turn the enemy into a "poof" animation
+                
+                return True # Squished
+            else:
+                # We've been hit! Get the lifeboats! Ready the guns!
+                if not hasSquishedSomeoneAlready:
+                    player.health -= 1
+                
+                # bounce the enemy back
+                self.vel_x *= -6
+                
+                return False # Not squished
+
     """
     Update enemy based on key input, gravity and collisions
     """
-    def update(self, blockGroup, screen, waypoint, player):
+    def update(self, blockGroup, screen, waypoint, player, hasSquishedSomeoneAlready):
         
         #Update movement
-        if self.movecounter == 0:   
-            self.basic_movement(waypoint, player)
-            self.movecounter = 20
+        self.basic_movement(waypoint, player)
 
         # Left/right movement
-        #Left
         if self.move == 0:
             # Go faster
             self.vel_x -= self.move_speed
             # But not too fast
             if self.vel_x < -1 * self.max_move_speed:
                 self.vel_x = -1 * self.max_move_speed
-        #Right
         if self.move == 1:
             # Go faster
             self.vel_x += self.move_speed
@@ -122,7 +144,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
+        squished = self.player_collide(player, hasSquishedSomeoneAlready)
+        
         self.movecounter -= 1
+        
+        if squished:
+            return True
+        else:
+            return False
 
     def basic_movement(self, waypoint, player):
         """
