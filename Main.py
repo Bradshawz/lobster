@@ -61,6 +61,9 @@ button_leftalign = screen.get_size()[0]/15
 button_spacing = 65
 button_base_y = screen.get_size()[1] - button_spacing*3
 
+# Make a heart
+heart = pygame.image.load("images/heart.png").convert_alpha()
+
 start_button = Button(["images/start_0.png","images/start_1.png", "images/start_2.png"], 
                       button_leftalign, button_base_y + button_spacing*0, 
                       1, 0)
@@ -303,6 +306,10 @@ while True:
         width, height = screen.get_size()
         screen.blit(game_label, (width/4, height/2))
         screen.blit(titlefont.render(str(player.points), 1, (255,140,0)),(screen.get_size()[0]*43/89, 5))
+        if player.health > 0:
+            heart_width = 35
+            for i in range (0, player.health):
+                screen.blit(heart, (width*5/8 + heart_width*i, height/50))
 
         # Render text for debug
         if DEBUG:
