@@ -1,6 +1,7 @@
 import pygame
 import random
 import Physics
+import math
 
 class Enemy(pygame.sprite.Sprite):
     """
@@ -81,7 +82,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, blocks, screen, waypoint, player):
         
         #Update movement
-        self.move = self.basic_movement(waypoint, player)
+        self.basic_movement(waypoint, player)
 
         # Left/right movement
         if self.move == 0:
@@ -129,17 +130,32 @@ class Enemy(pygame.sprite.Sprite):
         same platform region as the player, move toward the player.
         Otherwise move towards the nearest edge, using waypoints.
         """
+        wlist = []
+        closestval = 100000
+        closewaypoint = (0,0)
         #Check if the player is on the same floor
         if abs(player.rect.bottom - self.rect.top) < 16:
             if player.rect.right > self.rect.right:
-                return 1
+                self.move = 1
+                return 
             else:
-                return 0
-
-        #Find nearest waypoint
+                self.move = 0
+                return
+"""
+        #Find waypoints on same floor
         for w in waypoint:
             if abs(w[1] - self.rect.top) < 16:
-                
-                pass
-            
-            
+                wlist.append(w)
+        #Find closest waypoint
+        for c in wlist:
+            if math.sqrt(c[0]**2+c[1]**2) < closestval:
+                closestval = math.sqrt(c[0]**2+c[1]**2)
+                closewaypoint = c
+        if self.rect.right > closewaypoint[0]:
+            self.move = 1
+            return
+        else:
+            self.move = 0
+            return
+"""   
+         
