@@ -66,6 +66,9 @@ class Player(pygame.sprite.Sprite):
         # Points (how many enemies you have destroyed)
         self.points = 0
         
+        # Set Base Health
+        self.health = 10
+        
     """
     Block Collision
     """
@@ -109,14 +112,20 @@ class Player(pygame.sprite.Sprite):
     """
     def collide_enemy(self, yvel, enemyGroup):
         for enemy in pygame.sprite.spritecollide(self, enemyGroup, False):
-            # Squishing
-            if yvel > 0:
-                if self.rect.bottom - yvel < enemy.rect.top:
-                    self.points += 1
-                    enemyGroup.remove(enemy)
-                    # TODO::Turn the enemy's animation to a "squished" animation
-                    
-                    # TODO::After 500ms, turn the enemy into a "poof" animation
+            if yvel > 0 and self.rect.bottom - yvel < enemy.rect.top:
+                # Squish the enemy
+                self.points += 1
+                enemyGroup.remove(enemy)
+                
+                # Bounce off the enemy
+                self.vel_y = self.jump_speed/-1.5
+                # TODO::Turn the enemy's animation to a "squished" animation
+                
+                # TODO::After 500ms, turn the enemy into a "poof" animation
+            else:
+                # We've been hit! Get the lifeboats! Ready the guns!
+                self.health -= 1
+                # enemy.
     
     """
     Update player based on key input, gravity and collisions
