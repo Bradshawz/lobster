@@ -76,30 +76,15 @@ while True:
     # Update player based on keyboard input
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
-    for p in playerGroup.sprites():
-        p.update(keys_down, blockGroup.sprites(), enemyGroup)
-
-    #Check for making a loop between top and bottom of the map
-    for p in playerGroup.sprites():
-        if p.rect.top >= screen.get_size()[1]+16:
-            p.rect.bottom = 0
-        if p.rect.bottom <= 0-8:
-            p.rect.top = screen.get_size()[1]-8
-         
+    for p in playerGroup:
+        p.update(keys_down, blockGroup.sprites(), enemyGroup, screen)
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
     
     for e in enemyGroup:
-        e.basic_movement(waypointList)
-
-    #Check for making a loop between top and bottom of the map
-    for e in enemyGroup.sprites():
-        if e.rect.top >= screen.get_size()[1]+16:
-            e.rect.bottom = 0
-        if e.rect.bottom <= 0-8:
-            e.rect.top = screen.get_size()[1]-8
+        e.update(blockGroup.sprites(), screen, waypointList)
 
     #---------------------------------------------
     # Monster Spawning
@@ -115,9 +100,9 @@ while True:
     
     # Redraw all Groups
     blockGroup.draw(screen)
+    spawnerGroup.draw(screen)
     enemyGroup.draw(screen)
     playerGroup.draw(screen)
-    spawnerGroup.draw(screen)
     
 
     # Render text for debug

@@ -78,7 +78,7 @@ class Enemy(pygame.sprite.Sprite):
     """
     Update enemy based on key input, gravity and collisions
     """
-    def update(self, blocks):
+    def update(self, blocks, screen, waypoint):
         
         # Left/right movement
         if self.move == 0:
@@ -99,6 +99,12 @@ class Enemy(pygame.sprite.Sprite):
             self.vel_y += Physics.gravity
             if self.vel_y > Physics.terminal_gravity:
                 self.vel_y = Physics.terminal_gravity
+
+        # Looping Across screen
+        if self.rect.top >= screen.get_size()[1]+16:
+            self.rect.bottom = 0
+        if self.rect.bottom <= 0-8:
+            self.rect.top = screen.get_size()[1]-8
             
         # If not moving left or right, stop.
         #  if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
