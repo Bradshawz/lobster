@@ -74,14 +74,14 @@ while True:
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
     for p in playerGroup:
-        p.update(keys_down, blockGroup.sprites(), enemyGroup, screen)
+        p.update(keys_down, blockGroup, enemyGroup, screen)
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
     
     for e in enemyGroup:
-        e.update(blockGroup.sprites(), screen, waypointList, player)
+        e.update(blockGroup, screen, waypointList, player)
 
     #---------------------------------------------
     # Monster Spawning

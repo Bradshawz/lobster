@@ -40,8 +40,8 @@ class Enemy(pygame.sprite.Sprite):
     """
     Block Collision
     """
-    def collide(self, xvel, yvel, blocks):
-        for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:            
+    def collide(self, xvel, yvel, blockGroup):
+        for block in pygame.sprite.spritecollide(self, blockGroup, False):            
             # Check for collision on the sides
             if xvel > 0:
                 # going -->
@@ -78,7 +78,7 @@ class Enemy(pygame.sprite.Sprite):
     """
     Update enemy based on key input, gravity and collisions
     """
-    def update(self, blocks, screen, waypoint, player):
+    def update(self, blockGroup, screen, waypoint, player):
         
         #Update movement
         self.move = self.basic_movement(waypoint, player)
@@ -111,12 +111,12 @@ class Enemy(pygame.sprite.Sprite):
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
-        self.collide(self.vel_x, 0, blocks)
+        self.collide(self.vel_x, 0, blockGroup)
         
         # Move vertically, then handle vertical collisions
         self.rect.top += self.vel_y
         self.on_ground = False
-        self.collide(0, self.vel_y, blocks)
+        self.collide(0, self.vel_y, blockGroup)
         
 
     def basic_movement(self, waypoint, player):
