@@ -84,7 +84,7 @@ while True:
     #--------------------------------------------
     
     for e in enemyGroup:
-        e.update(blockGroup.sprites(), screen, waypointList)
+        e.update(blockGroup.sprites(), screen, waypointList, player)
 
     #---------------------------------------------
     # Monster Spawning

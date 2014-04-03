@@ -78,8 +78,11 @@ class Enemy(pygame.sprite.Sprite):
     """
     Update enemy based on key input, gravity and collisions
     """
-    def update(self, blocks, screen, waypoint):
+    def update(self, blocks, screen, waypoint, player):
         
+        #Update movement
+        self.basic_movement(waypoint, player)
+
         # Left/right movement
         if self.move == 0:
             # Go faster
@@ -120,7 +123,21 @@ class Enemy(pygame.sprite.Sprite):
         self.collide(0, self.vel_y, blocks)
         
 
-    def basic_movement(self, waypoints):
-        pass
+    def basic_movement(self, waypoint, player):
+        """
+        The basic movement for an enemy. If the player is on the 
+        same platform region as the player, move toward the player.
+        Otherwise move towards the nearest edge, using waypoints.
+        """
+
+        if abs(player.rect.bottom - self.rect.top) < 16:
+            if player.rect.right > self.rect.right:
+                return 1
+            else:
+                return 0
+
+        for w in waypoint:
+            if w:
+                pass
             
             
