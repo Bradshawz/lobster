@@ -72,7 +72,7 @@ while True:
     # Update player based on keyboard input
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
     for p in playerGroup.sprites():
-        p.update(keys_down, blockGroup.sprites())
+        p.update(keys_down, blockGroup.sprites(), enemyGroup)
 
     #--------------------------------------------
     # Enemy Movement    
@@ -103,7 +103,7 @@ while True:
     if DEBUG:
         label = myfont.render("fps:"+str(int(clock.get_fps()))
                               +" monsters:"+str(len(enemyGroup))
-                              +" walking_anim: " + str(playerGroup.sprites()[0].anim_frame_counter_walking), 
+                              +" player_points: " + str(playerGroup.sprites()[0].points), 
                               1, (0,0,0))
         screen.blit(label, (20, 10))
 

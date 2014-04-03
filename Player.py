@@ -53,20 +53,24 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottomleft = bottomleft
         
+        # Current speeds
         self.vel_x = 0
         self.vel_y = 0
         
+        # Jumping and base+max speeds
         self.on_ground = False
         self.jump_speed = 7
         self.move_speed = 1
         self.max_move_speed = 3
+        
+        # Points (how many enemies you have destroyed)
+        self.points = 0
         
     """
     Block Collision
     """
     def collide(self, xvel, yvel, blocks):
         for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:
-            
             # Check for collision on the sides
             if xvel > 0:
                 # going -->
@@ -99,11 +103,25 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
+                        
+    """
+    Enemy Collision
+    """
+    def collide_enemy(self, yvel, enemyGroup):
+        for enemy in pygame.sprite.spritecollide(self, enemyGroup, False):
+            # Squishing
+            if yvel > 0:
+                if self.rect.bottom - yvel < enemy.rect.top:
+                    self.points += 1
+                    enemyGroup.remove(enemy)
+                    # TODO::Turn the enemy's animation to a "squished" animation
+                    
+                    # TODO::After 500ms, turn the enemy into a "poof" animation
     
     """
     Update player based on key input, gravity and collisions
     """
-    def update(self, keys, blocks):
+    def update(self, keys, blocks, enemyGroup):
         # Jumping
         if keys[pygame.K_UP] and self.on_ground:
             self.vel_y -= self.jump_speed
@@ -159,4 +177,5 @@ class Player(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
+        self.collide_enemy(self.vel_y, enemyGroup)
                 
