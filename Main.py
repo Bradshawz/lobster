@@ -32,12 +32,16 @@ game_font = pygame.font.SysFont("comicsansms",30)
 
 # Create the map
 game_map = Map("getonmy.lvl")
+
 blockGroup = pygame.sprite.Group()
 for block in game_map.get_blocks():
     block.add(blockGroup)
+
 spawnerGroup = pygame.sprite.Group()
 for spawner in game_map.get_spawner():
     spawner.add(spawnerGroup)
+
+waypointList = game_map.get_waypoints()
 
 
 # Create the player
@@ -85,8 +89,8 @@ while True:
     # Enemy Movement    
     #--------------------------------------------
     
-    for enemy in enemyGroup:
-        enemy.update(blockGroup.sprites())
+    for e in enemyGroup:
+        e.basic_movement(waypointList)
 
     #Check for making a loop between top and bottom of the map
     for e in enemyGroup.sprites():

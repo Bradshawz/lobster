@@ -113,7 +113,7 @@ class Enemy(pygame.sprite.Sprite):
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
 
-        def basic_movement(self, waypoints):
-            
+    def basic_movement(self, waypoints):
+        pass
             
             
