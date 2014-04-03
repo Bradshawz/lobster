@@ -34,15 +34,12 @@ gamefont = pygame.font.SysFont("comicsansms",30)
 game_map = Map("getonmy.lvl")
 
 blockGroup = pygame.sprite.Group()
-for block in game_map.get_blocks():
-    block.add(blockGroup)
+blockGroup.add([block for block in game_map.get_blocks()])
 
 spawnerGroup = pygame.sprite.Group()
-for spawner in game_map.get_spawner():
-    spawner.add(spawnerGroup)
+spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
 
 waypointList = game_map.get_waypoints()
-
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
@@ -91,6 +88,7 @@ while True:
     #---------------------------------------------
     for spawner in spawnerGroup:
         spawner.spawn(enemyGroup)
+    
     # --------------------------------------------
     # Redraw everything on the screen
     # --------------------------------------------
