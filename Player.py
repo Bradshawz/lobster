@@ -73,9 +73,9 @@ class Player(pygame.sprite.Sprite):
         self.facing_left = True
         self.punching = False
         self.punching_left = self.facing_left
-        self.punching_time = 1.0
+        self.punching_time = .8
         self.can_punch = True
-        self.punch_cooldown = 0.1
+        self.punch_cooldown = 1.6
         
         self.reset()
         

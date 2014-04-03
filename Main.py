@@ -10,7 +10,6 @@ from Manage_highscores import *
 from Button import Button
 from Map import Map
 from Player import Player
-from HealthBar import HealthBar
 
 # Importing Timer to schedule things
 # Example use:
@@ -193,13 +192,6 @@ while True:
         enemyGroup = pygame.sprite.Group()
         # Create a group for dying (non-interactive) enemies
         dyingEnemyGroup = pygame.sprite.Group()
-        
-        # Create the UI
-        uiGroup = pygame.sprite.Group()
-        bar_width = 16
-        health_bar = HealthBar(3, Rect((screen.get_size()[0]-bar_width, 0), (bar_width, screen.get_size()[1])))
-        health_bar.add(uiGroup)
-        point_display = 1 #TODO add points display label
 
         # Monster spawn times
         last_called_basic = time.time()
@@ -296,16 +288,13 @@ while True:
                 playerGroup.draw(screen)
         else:
             playerGroup.draw(screen)
-        
-        # Update and draw UI
-        if player.health != health_bar.get_health():
-            health_bar.set_current_health(player.health)
-        uiGroup.draw(screen)
 
         # Draw game text
         width, height = screen.get_size()
         screen.blit(game_label, (width/4, height/2))
         screen.blit(titlefont.render(str(player.points), 1, (255,140,0)),(screen.get_size()[0]*43/89, 5))
+
+        # Draw health bar
         if player.health > 0:
             heart_width = 35
             for i in range (0, player.health):
