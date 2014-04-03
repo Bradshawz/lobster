@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((608,448),0,24)
 clock = pygame.time.Clock()
 
 # Initialize font for printing to screen
-myfont = pygame.font.SysFont("monospace", 15)
+debugfont = pygame.font.SysFont("monospace", 15)
 
 # Create a white background
 bg = pygame.Surface(screen.get_size())
@@ -28,7 +28,7 @@ bg.fill(pygame.Color(255,255,255))
 
 # Set the window title and game font
 pygame.display.set_caption("Horde")
-game_font = pygame.font.SysFont("comicsansms",30)
+gamefont = pygame.font.SysFont("comicsansms",30)
 
 # Create the map
 game_map = Map("getonmy.lvl")
@@ -72,7 +72,7 @@ while True:
     # Update player based on keyboard input
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
-    for p in playerGroup.sprites():
+    for p in playerGroup:
         p.update(keys_down, blockGroup.sprites(), enemyGroup)
 
     #Check for making a loop between top and bottom of the map
@@ -111,17 +111,18 @@ while True:
     
     # Redraw all Groups
     blockGroup.draw(screen)
+    spawnerGroup.draw(screen)
     enemyGroup.draw(screen)
     playerGroup.draw(screen)
-    spawnerGroup.draw(screen)
-    
 
     # Render text for debug
     if DEBUG:
-        label = myfont.render("fps:"+str(int(clock.get_fps()))
+        label = debugfont.render("fps:"+str(int(clock.get_fps()))
                               +" monsters:"+str(len(enemyGroup))
-                              +" player_points: " + str(playerGroup.sprites()[0].points),
-                              1, (0,0,0))
+                              +" points: " + str(playerGroup.sprites()[0].points)
+                              +" health: " + str(playerGroup.sprites()[0].health)
+                              
+                              , 1, (0,0,0))
         screen.blit(label, (20, 10))
 
 
