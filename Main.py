@@ -34,15 +34,12 @@ gamefont = pygame.font.SysFont("comicsansms",30)
 game_map = Map("getonmy.lvl")
 
 blockGroup = pygame.sprite.Group()
-for block in game_map.get_blocks():
-    block.add(blockGroup)
+blockGroup.add([block for block in game_map.get_blocks()])
 
 spawnerGroup = pygame.sprite.Group()
-for spawner in game_map.get_spawner():
-    spawner.add(spawnerGroup)
+spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
 
 waypointList = game_map.get_waypoints()
-
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
@@ -77,20 +74,21 @@ while True:
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
     for p in playerGroup:
-        p.update(keys_down, blockGroup.sprites(), enemyGroup, screen)
+        p.update(keys_down, blockGroup, enemyGroup, screen)
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
     
     for e in enemyGroup:
-        e.update(blockGroup.sprites(), screen, waypointList, player)
+        e.update(blockGroup, screen, waypointList, player)
 
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
     for spawner in spawnerGroup:
         spawner.spawn(enemyGroup)
+    
     # --------------------------------------------
     # Redraw everything on the screen
     # --------------------------------------------
