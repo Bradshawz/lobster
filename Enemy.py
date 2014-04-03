@@ -109,10 +109,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.bottom <= 0-8:
             self.rect.top = screen.get_size()[1]-8
             
-        # If not moving left or right, stop.
-        #  if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
-        #     self.vel_x = 0
-            
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
         self.collide(self.vel_x, 0, blocks)
