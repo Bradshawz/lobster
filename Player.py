@@ -132,7 +132,7 @@ class Player(pygame.sprite.Sprite):
     """
     Update player based on key input, gravity and collisions
     """
-    def update(self, keys, blocks, enemyGroup):
+    def update(self, keys, blocks, enemyGroup, screen):
         # Jumping
         if keys[pygame.K_UP] and self.on_ground:
             self.vel_y -= self.jump_speed
@@ -158,6 +158,12 @@ class Player(pygame.sprite.Sprite):
             if self.vel_y > Physics.terminal_gravity:
                 self.vel_y = Physics.terminal_gravity
             
+        # Loop between top and bottom of map
+        if self.rect.top >= screen.get_size()[1]+16:
+            self.rect.bottom = 0
+        if self.rect.bottom <= 0-8:
+            self.rect.top = screen.get_size()[1]-8
+                
         # If not moving left or right, stop.
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0

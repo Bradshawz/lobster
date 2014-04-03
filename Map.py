@@ -108,3 +108,9 @@ class Map:
         Returns a list of spawners in this map.
         """
         return self.spawner_list
+
+    def get_waypoints(self):
+        """
+        Returns a list of tuples of platform edges
+        """
+        return self.waypoint_list

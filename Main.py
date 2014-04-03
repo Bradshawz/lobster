@@ -32,12 +32,16 @@ gamefont = pygame.font.SysFont("comicsansms",30)
 
 # Create the map
 game_map = Map("getonmy.lvl")
+
 blockGroup = pygame.sprite.Group()
 for block in game_map.get_blocks():
     block.add(blockGroup)
+
 spawnerGroup = pygame.sprite.Group()
 for spawner in game_map.get_spawner():
     spawner.add(spawnerGroup)
+
+waypointList = game_map.get_waypoints()
 
 
 # Create the player
@@ -73,6 +77,9 @@ while True:
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
     for p in playerGroup:
+<<<<<<< HEAD
+        p.update(keys_down, blockGroup.sprites(), enemyGroup, screen)
+=======
         p.update(keys_down, blockGroup.sprites(), enemyGroup)
 
     #Check for making a loop between top and bottom of the map
@@ -82,20 +89,14 @@ while True:
         if p.rect.bottom <= 0-8:
             p.rect.top = screen.get_size()[1]-8
          
+>>>>>>> 9ff4af28ad2ab010f80508f11774f575e8a910c6
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
     
-    for enemy in enemyGroup:
-        enemy.update(blockGroup.sprites())
-
-    #Check for making a loop between top and bottom of the map
-    for e in enemyGroup.sprites():
-        if e.rect.top >= screen.get_size()[1]+16:
-            e.rect.bottom = 0
-        if e.rect.bottom <= 0-8:
-            e.rect.top = screen.get_size()[1]-8
+    for e in enemyGroup:
+        e.update(blockGroup.sprites(), screen, waypointList)
 
     #---------------------------------------------
     # Monster Spawning
