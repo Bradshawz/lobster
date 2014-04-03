@@ -39,9 +39,12 @@ class Player(pygame.sprite.Sprite):
                 self.images[anim_type].append(pygame.image.load(cur_image_filename).convert_alpha())
         self.image = self.images['standing'][0]
         
-        self.anim_image = 0
-        self.anim_frame_counter = 0
-        self.anim_frame_max = 2
+        self.anim_image_walking = 0
+        self.anim_image_jumping = 0
+        self.anim_frame_counter_walking = 0
+        self.anim_frame_counter_jumping = 0
+        self.anim_frame_max_walking = 2
+        self.anim_frame_max_jumping = 8
         
         # Set the collision mask based on the image
         self.mask = pygame.mask.from_surface(self.image)
@@ -50,20 +53,24 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.bottomleft = bottomleft
         
+        # Current speeds
         self.vel_x = 0
         self.vel_y = 0
         
+        # Jumping and base+max speeds
         self.on_ground = False
         self.jump_speed = 7
         self.move_speed = 1
         self.max_move_speed = 3
+        
+        # Points (how many enemies you have destroyed)
+        self.points = 0
         
     """
     Block Collision
     """
     def collide(self, xvel, yvel, blocks):
         for block in [blocks[i] for i in self.rect.collidelistall(blocks)]:
-            
             # Check for collision on the sides
             if xvel > 0:
                 # going -->
@@ -96,11 +103,25 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
+                        
+    """
+    Enemy Collision
+    """
+    def collide_enemy(self, yvel, enemyGroup):
+        for enemy in pygame.sprite.spritecollide(self, enemyGroup, False):
+            # Squishing
+            if yvel > 0:
+                if self.rect.bottom - yvel < enemy.rect.top:
+                    self.points += 1
+                    enemyGroup.remove(enemy)
+                    # TODO::Turn the enemy's animation to a "squished" animation
+                    
+                    # TODO::After 500ms, turn the enemy into a "poof" animation
     
     """
     Update player based on key input, gravity and collisions
     """
-    def update(self, keys, blocks):
+    def update(self, keys, blocks, enemyGroup):
         # Jumping
         if keys[pygame.K_UP] and self.on_ground:
             self.vel_y -= self.jump_speed
@@ -129,8 +150,24 @@ class Player(pygame.sprite.Sprite):
         # If not moving left or right, stop.
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0
-            # Animate the standing
-            self.image = self.images['standing'][0]
+            
+        # TODO fix these anims
+        # Walking Animation
+#         if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
+#             # Animate the walking!
+#             self.anim_frame_counter_walking = (self.anim_frame_counter_walking + 1) % self.anim_frame_max_walking
+#             if self.anim_frame_counter_walking == 0:
+#                 self.anim_image_walking = (self.anim_image_walking + 1) % len(self.images['walking'])
+#                 self.image = self.images['walking'][self.anim_image_walking]
+#         # Standing Animation
+#         # Jumping Animation
+#         elif not self.on_ground:
+#             # Animate the jumping!
+#             self.anim_frame_counter_jumping = (self.anim_frame_counter_jumping + 1) % self.anim_frame_max_jumping
+#             if self.anim_frame_counter_jumping == 0:
+#                 self.anim_image_jumping = (self.anim_image_jumping + 1) % len(self.images['jumping'])
+#                 self.image = self.images['jumping'][self.anim_image_jumping]
+        
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x
@@ -140,14 +177,5 @@ class Player(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
-        
-        # Walking and Jumping Animation
-        if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
-            # Animate the walking!
-            self.anim_frame_counter = (self.anim_frame_counter + 1) % self.anim_frame_max
-            if self.anim_frame_counter == 0:
-                self.anim_image = (self.anim_image + 1) % len(self.images['walking'])
-                self.image = self.images['walking'][self.anim_image]
-        if not self.on_ground:
-            # Animate the jumping!
-            pass
+        self.collide_enemy(self.vel_y, enemyGroup)
+                

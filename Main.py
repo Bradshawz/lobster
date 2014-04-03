@@ -48,7 +48,9 @@ waypointList = game_map.get_waypoints()
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
 player_anims = {"standing" : ["lobster_standing.png"],
                 "walking"  : ["lobster_walking_0.png",
-                              "lobster_walking_1.png"]
+                              "lobster_walking_1.png"],
+                "jumping"  : ["lobster_jumping_0.png",
+                              "lobster_jumping_1.png"]
                 }
 player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
@@ -75,7 +77,7 @@ while True:
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
     for p in playerGroup.sprites():
-        p.update(keys_down, blockGroup.sprites())
+        p.update(keys_down, blockGroup.sprites(), enemyGroup)
 
     #Check for making a loop between top and bottom of the map
     for p in playerGroup.sprites():
@@ -121,8 +123,8 @@ while True:
     # Render text for debug
     if DEBUG:
         label = myfont.render("fps:"+str(int(clock.get_fps()))
-                              +" monsters:"+str(len(enemyGroup)) 
-                              +str(player.rect.bottomleft),
+                              +" monsters:"+str(len(enemyGroup))
+                              +" player_points: " + str(playerGroup.sprites()[0].points),
                               1, (0,0,0))
         screen.blit(label, (20, 10))
 
