@@ -9,8 +9,6 @@ class Enemy(pygame.sprite.Sprite):
     Can move and kill the player.
     Has an image, rect-bounds.
     """
-    BASE_MOVE_SPEED = 1
-
     def __init__(self, image_filename, pos_x, pos_y):
         """
         Pass in the filename of the image to represent
@@ -35,7 +33,7 @@ class Enemy(pygame.sprite.Sprite):
         
         self.on_ground = False
         self.move_speed = 1
-        self.max_move_speed = 3
+        self.max_move_speed = 2
         self.movecounter = 20
         
     """
@@ -163,7 +161,7 @@ class Enemy(pygame.sprite.Sprite):
         closestval = 100000
         closewaypoint = (0,0)
         #Check if the player is on the same floor
-        if abs(player.rect.bottom - self.rect.top) < 20:
+        if abs(player.rect.bottom - self.rect.top) < 70:
             if player.rect.right > self.rect.right:
                 self.move = 1
                 return 
@@ -180,9 +178,9 @@ class Enemy(pygame.sprite.Sprite):
             if abs(c[0]-self.rect.center[0]) < closestval:
                 closestval = abs(c[0]-self.rect.center[0])
                 closewaypoint = c
-        if self.rect.right < closewaypoint[0]:
+        if self.rect.right < closewaypoint[0]+16:
             self.move = 1
             return
-        else:
+        if self.rect.right > closewaypoint[0]+16:
             self.move = 0
             return         
