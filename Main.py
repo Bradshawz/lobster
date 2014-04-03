@@ -69,14 +69,31 @@ while True:
     
     # Update player based on keyboard input
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
+
     for p in playerGroup.sprites():
         p.update(keys_down, blockGroup.sprites())
+
+    #Check for making a loop between top and bottom of the map
+    for p in playerGroup.sprites():
+        if p.rect.top >= screen.get_size()[1]+16:
+            p.rect.bottom = 0
+        if p.rect.bottom <= 0-8:
+            p.rect.top = screen.get_size()[1]-8
+         
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
+    
     for enemy in enemyGroup:
         enemy.update(blockGroup.sprites())
+
+    #Check for making a loop between top and bottom of the map
+    for e in enemyGroup.sprites():
+        if e.rect.top >= screen.get_size()[1]+16:
+            e.rect.bottom = 0
+        if e.rect.bottom <= 0-8:
+            e.rect.top = screen.get_size()[1]-8
 
     #---------------------------------------------
     # Monster Spawning
@@ -100,7 +117,8 @@ while True:
     # Render text for debug
     if DEBUG:
         label = myfont.render("fps:"+str(int(clock.get_fps()))
-                              +" monsters:"+str(len(enemyGroup)), 
+                              +" monsters:"+str(len(enemyGroup)) 
+                              +str(player.rect.bottomleft),
                               1, (0,0,0))
         screen.blit(label, (20, 10))
 
