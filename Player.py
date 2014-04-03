@@ -125,7 +125,9 @@ class Player(pygame.sprite.Sprite):
             else:
                 # We've been hit! Get the lifeboats! Ready the guns!
                 self.health -= 1
-                # enemy.
+                
+                # bounce the enemy back
+                enemy.vel_x *= -3
     
     """
     Update player based on key input, gravity and collisions
