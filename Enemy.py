@@ -81,7 +81,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, blocks, screen, waypoint, player):
         
         #Update movement
-        self.basic_movement(waypoint, player)
+        self.move = self.basic_movement(waypoint, player)
 
         # Left/right movement
         if self.move == 0:
@@ -125,15 +125,17 @@ class Enemy(pygame.sprite.Sprite):
         same platform region as the player, move toward the player.
         Otherwise move towards the nearest edge, using waypoints.
         """
-
+        #Check if the player is on the same floor
         if abs(player.rect.bottom - self.rect.top) < 16:
             if player.rect.right > self.rect.right:
                 return 1
             else:
                 return 0
 
+        #Find nearest waypoint
         for w in waypoint:
-            if w:
+            if abs(w[1] - self.rect.top) < 16:
+                
                 pass
             
             
