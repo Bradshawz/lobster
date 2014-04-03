@@ -112,5 +112,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blocks)
-        self.move = random.randint(0,1)
+
+        def basic_movement(self, waypoints):
+            
+            
             

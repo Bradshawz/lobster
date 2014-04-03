@@ -39,6 +39,7 @@ class Map:
         self.block_list = []
         self.spawner_list = []
         self.player_pos = (0,0)
+        self.waypoint_list = []
         
         # Iterate over each row in the map
         cur_x = -16
@@ -78,6 +79,10 @@ class Map:
                     if char == 's':
                         spawner = Spawner(self.char_to_filename[char], cur_x, cur_y)
                         self.spawner_list.append(spawner)
+
+                    # Waypoint
+                    if char == 'w':
+                        self.waypoint_list.append((cur_x, cur_y))
                         
                 cur_x += 16
                 

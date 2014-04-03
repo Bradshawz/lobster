@@ -27,8 +27,7 @@ class Spawner(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect()
         
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.center = (x, y)
         self.spawnnumber = 3000
 
 
