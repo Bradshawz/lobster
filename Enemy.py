@@ -1,7 +1,6 @@
 import pygame
 import random
 import Physics
-import math
 
 class Enemy(pygame.sprite.Sprite):
     """
@@ -37,6 +36,7 @@ class Enemy(pygame.sprite.Sprite):
         self.on_ground = False
         self.move_speed = 1
         self.max_move_speed = 3
+        self.movecounter = 20
         
     """
     Block Collision
@@ -82,15 +82,19 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, blockGroup, screen, waypoint, player):
         
         #Update movement
-        self.basic_movement(waypoint, player)
+        if self.movecounter == 0:   
+            self.basic_movement(waypoint, player)
+            self.movecounter = 20
 
         # Left/right movement
+        #Left
         if self.move == 0:
             # Go faster
             self.vel_x -= self.move_speed
             # But not too fast
             if self.vel_x < -1 * self.max_move_speed:
                 self.vel_x = -1 * self.max_move_speed
+        #Right
         if self.move == 1:
             # Go faster
             self.vel_x += self.move_speed
@@ -118,7 +122,7 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
-        
+        self.movecounter -= 1
 
     def basic_movement(self, waypoint, player):
         """
@@ -130,28 +134,26 @@ class Enemy(pygame.sprite.Sprite):
         closestval = 100000
         closewaypoint = (0,0)
         #Check if the player is on the same floor
-        if abs(player.rect.bottom - self.rect.top) < 16:
+        if abs(player.rect.bottom - self.rect.top) < 20:
             if player.rect.right > self.rect.right:
                 self.move = 1
                 return 
             else:
                 self.move = 0
                 return
-"""
+
         #Find waypoints on same floor
         for w in waypoint:
-            if abs(w[1] - self.rect.top) < 16:
+            if abs(w[1] - self.rect.top) < 20:
                 wlist.append(w)
         #Find closest waypoint
         for c in wlist:
-            if math.sqrt(c[0]**2+c[1]**2) < closestval:
-                closestval = math.sqrt(c[0]**2+c[1]**2)
+            if abs(c[0]-self.rect.center[0]) < closestval:
+                closestval = abs(c[0]-self.rect.center[0])
                 closewaypoint = c
-        if self.rect.right > closewaypoint[0]:
+        if self.rect.right < closewaypoint[0]:
             self.move = 1
             return
         else:
             self.move = 0
-            return
-"""   
-         
+            return         
