@@ -78,6 +78,7 @@ class Enemy(pygame.sprite.Sprite):
     Collision with Player
     """
     def player_collide(self, player,hasSquishedSomeoneAlready):
+        isSquished = False
         if pygame.sprite.collide_rect(self, player):
             if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
                 # Player squishes this enemy
@@ -89,7 +90,7 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # TODO::After 500ms, turn the enemy into a "poof" animation
                 
-                return True # Squished
+                isSquished = True # Squished
             else:
                 # We've been hit! Get the lifeboats! Ready the guns!
                 if not hasSquishedSomeoneAlready:
@@ -98,7 +99,8 @@ class Enemy(pygame.sprite.Sprite):
                 # bounce the enemy back
                 self.vel_x *= -6
                 
-                return False # Not squished
+                isSquished = False # Not squished
+        return isSquished
 
     """
     Update enemy based on key input, gravity and collisions
@@ -142,14 +144,11 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
-        squished = self.player_collide(player, hasSquishedSomeoneAlready)
+        isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
         
         self.movecounter -= 1
         
-        if squished:
-            return True
-        else:
-            return False
+        return isSquished
 
     def basic_movement(self, waypoint, player):
         """

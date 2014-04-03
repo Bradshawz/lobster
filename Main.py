@@ -79,10 +79,12 @@ while True:
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
-    
+    hasSquishedSomeoneAlready = False
     for e in enemyGroup:
-        e.update(blockGroup, screen, waypointList, player)
-
+        squished = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
+        if squished:
+            hasSquishedSomeoneAlready = True
+    
     #---------------------------------------------
     # Monster Spawning
     #---------------------------------------------
