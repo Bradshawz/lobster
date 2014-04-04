@@ -10,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
     Can move and kill the player.
     Has an image, rect-bounds.
     """
-    def __init__(self, image_filename, pos_x, pos_y):
+    def __init__(self, image_filename, pos_x, pos_y, enemytype):
         """
         Pass in the filename of the image to represent
         this enemy.
@@ -38,6 +38,8 @@ class Enemy(pygame.sprite.Sprite):
         self.movecounter = 140
         
         self.currently_dying = False
+
+        self.enemy_type = enemytype
         
     """
     Block Collision
@@ -80,7 +82,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.vel_y = 0
                         
     """
-    Collision with Player
+    Collision with Player and basic enemy
     """
     def player_collide(self, player,hasSquishedSomeoneAlready):
         isSquished = False
@@ -116,14 +118,51 @@ class Enemy(pygame.sprite.Sprite):
         return isSquished
 
     """
+    Collision with Player and spiky enemy
+    """
+    def player_collide_spiky(self, player):
+        if pygame.sprite.collide_rect(self, player):
+            if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
+                # Player squishes this enemy and gets hurt
+                if not player.temp_invulnerable:
+                    if not player.currently_dying:
+                        player.health -= 1
+                
+                # Bounce off the enemy
+                player.vel_y = player.jump_speed/-1.5
+                # TODO::Turn the enemy's animation to a "squished" animation
+                
+                # TODO::After 500ms, turn the enemy into a "poof" animation
+                
+                
+            elif not player.temp_invulnerable:
+                # We've been hit! Get the lifeboats! Ready the guns!
+                if not player.currently_dying:
+                    player.health -= 1
+                
+                # bounce the enemy back
+                self.vel_x *= -6
+                
+            # Set player to be temporarily invulnerable and TODO::flashing
+            if not player.temp_invulnerable:
+                player.temp_invulnerable = True
+                setVulnerableTimer = Timer(2.0, player.set_vulnerable)
+                setVulnerableTimer.start()
+                
+
+    """
     Update enemy based on key input, gravity and collisions
     """
     def update(self, blockGroup, screen, waypoint, player, hasSquishedSomeoneAlready):
         
         #Update movement
-        if self.movecounter == 0:
-            self.random_movement()
-            self.movecounter = 140
+        if self.enemy_type == "basic":
+            if self.movecounter == 0:
+                self.random_movement()
+                self.movecounter = 140
+        
+        if self.enemy_type == "spiky":
+            self.basic_movement(waypoint, player)
  
         # Left/right movement
         #Left
@@ -163,11 +202,14 @@ class Enemy(pygame.sprite.Sprite):
         self.collide(0, self.vel_y, blockGroup)
         
         # Check collision with player
-        isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
-            
+        if self.enemy_type == "basic":
+            isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
+        if self.enemy_type == "spiky":
+            self.player_collide_spiky(player)
         self.movecounter -= 1
         
-        return isSquished
+        if self.enemy_type == "basic":
+            return isSquished
 
     def basic_movement(self, waypoint, player):
         """
