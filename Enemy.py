@@ -101,17 +101,18 @@ class Enemy(pygame.sprite.Sprite):
             elif not player.temp_invulnerable:
                 # We've been hit! Get the lifeboats! Ready the guns!
                 if not hasSquishedSomeoneAlready and not player.currently_dying:
+                    # Lose some health
                     player.health -= 1
+                    
+                    # Set player to be temporarily invulnerable
+                    player.temp_invulnerable = True
+                    setVulnerableTimer = Timer(2.0, player.set_vulnerable)
+                    setVulnerableTimer.start()
                 
                 # bounce the enemy back
                 self.vel_x *= -6
                 
-                # Set player to be temporarily invulnerable and TODO::flashing
-                player.temp_invulnerable = True
-                # TODO::make the blinking animation
-                # player.set_animation("blinking")
-                setVulnerableTimer = Timer(2.0, player.set_vulnerable)
-                setVulnerableTimer.start()
+                
                 
                 isSquished = False # Enemy not squished
 

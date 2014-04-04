@@ -74,6 +74,9 @@ class Player(pygame.sprite.Sprite):
         
         # Used when we take damage from an enemy
         self.temp_invulnerable = False
+        self.blink_counter = 0
+        self.blink_threshold = 15
+        self.blink_visible = True
         
         # Set starting location (which comes from 
         self.rect.bottomleft = self.startloc
@@ -120,7 +123,7 @@ class Player(pygame.sprite.Sprite):
         
     def set_vulnerable(self):
         self.temp_invulnerable = False
-
+        
     """
     Block Collision
     """
@@ -217,4 +220,14 @@ class Player(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
+        
+        # Blinking after taking damage
+        if self.temp_invulnerable:
+            self.blink_counter += 1
+            # If it's time to toggle visibility,
+            if self.blink_counter >= self.blink_threshold:
+                # Then toggle visibility
+                self.blink_counter = 0
+                self.blink_visible = not self.blink_visible # Toggle visibility
+        
                 

@@ -142,7 +142,13 @@ while True:
     blockGroup.draw(screen)
     spawnerGroup.draw(screen)
     enemyGroup.draw(screen)
-    playerGroup.draw(screen)
+    if player.temp_invulnerable:
+        # If we were just hit, we will be blinking
+        if player.blink_visible:
+            # If the blinking is currently in the visible state, then draw the player
+            playerGroup.draw(screen)
+    else:
+        playerGroup.draw(screen)
     
     # Draw game text
     width, height = screen.get_size()
