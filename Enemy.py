@@ -38,7 +38,56 @@ class Enemy(pygame.sprite.Sprite):
         self.movecounter = 140
         
         self.currently_dying = False
+    
+    #===========================================================================
+    # Animations
+    #===========================================================================
+    
+    def create_animation(self, name, filenames, frames_between):
+        self.anims[name] = dict()
         
+        # Images
+        self.anims[name]['images'] = []
+        for cur_image_filename in filenames:
+            self.anims[name]['images'].append(pygame.image.load(cur_image_filename).convert_alpha())
+        
+        # Timing
+        self.anims[name]['frames_between'] = frames_between
+        self.anims[name]['counter'] = 0
+        self.anims[name]['cur_image_index'] = 0
+    
+    def set_animation(self, name):
+        self.cur_anim = name
+        
+    def animate(self):
+        # To be called every frame
+        this_anim = self.anims[self.cur_anim]
+        
+        # Increment the counter for our current animation
+        this_anim['counter'] += 1
+        
+        # If we've hit the threshold ('frames_between'), then move to the
+        # next image in the sequence for this animation (which could mean looping
+        # back to the front)
+        if this_anim['counter'] >= this_anim['frames_between']:
+            this_anim['counter'] = 0
+            
+            # If we're at the end of the list,
+            if this_anim['cur_image_index'] >= len(this_anim['images'])-1:
+                # Then loop back to the front
+                this_anim['cur_image_index'] = 0
+            else:
+                # Otherwise, go to the next one
+                this_anim['cur_image_index'] += 1
+        
+        # Set the image
+        self.image = this_anim['images'][this_anim['cur_image_index']]
+    
+    
+    #===========================================================================
+    # Collisions and updating
+    #===========================================================================
+    
     """
     Block Collision
     """
