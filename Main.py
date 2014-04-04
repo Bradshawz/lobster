@@ -8,6 +8,18 @@ from Enemy import *
 from Map import *
 from Spawner import *
 
+# Importing Timer to schedule things
+# Example use:
+# secondsToWait = 1.5
+# list_of = player_sprite
+# parameters = "new-image.jpg"
+# def changeImage(player, filename) {
+#     player.image = filename
+# }
+# changeImageTimer = Timer(secondsToWait, changeImage, [list_of, parameters])
+# a la http://stackoverflow.com/questions/16578652/threading-timer
+from threading import Timer
+
 # Debug
 DEBUG = True
 
@@ -18,8 +30,10 @@ screen = pygame.display.set_mode((608,448),0,24)
 # Create a clock to use to hold the framerate constant
 clock = pygame.time.Clock()
 
-# Initialize font for printing to screen
+# Initialize fonts for printing to screen
 debugfont = pygame.font.SysFont("monospace", 15)
+gamefont = pygame.font.SysFont("monospace",30)
+game_label = gamefont.render("TestLabel", 1, (0,0,0))
 
 # Create a white background
 bg = pygame.Surface(screen.get_size())
@@ -28,7 +42,6 @@ bg.fill(pygame.Color(255,255,255))
 
 # Set the window title and game font
 pygame.display.set_caption("Horde")
-gamefont = pygame.font.SysFont("comicsansms",30)
 
 # Create the map
 game_map = Map("getonmy.lvl")
@@ -55,6 +68,15 @@ player.add(playerGroup) # Add the player Sprite to the Group
 # Create an enemy group
 enemyGroup = pygame.sprite.Group() # Create the Group
 
+# To be used on game restart or on
+# player death/game over
+def resetGame():
+    global game_label # using the GLOBAL game_label
+    game_label = gamefont.render("", 1, (0,0,0))
+    player.reset()
+    enemyGroup.empty()
+
+
 # --------------------------------------------
 # Main Game Loop
 # --------------------------------------------
@@ -67,14 +89,19 @@ while True:
             exit()
     
     # --------------------------------------------
-    # Player Movement & Collisions
+    # Player: Movement, Collisions and Death
     # --------------------------------------------
     
     # Update player based on keyboard input
     keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
 
-    for p in playerGroup:
-        p.update(keys_down, blockGroup, enemyGroup, screen)
+    player.update(keys_down, blockGroup, enemyGroup, screen)
+    if player.health <= 0:
+        # Player has died
+        game_label = gamefont.render("Game over! Points: {}".format(player.points),
+                                         1, (0,0,0))
+        resetGameTimer = Timer(3.0, resetGame)
+        resetGameTimer.start()
 
     #--------------------------------------------
     # Enemy Movement    
@@ -103,13 +130,17 @@ while True:
     spawnerGroup.draw(screen)
     enemyGroup.draw(screen)
     playerGroup.draw(screen)
+    
+    # Draw game text
+    width, height = screen.get_size()
+    screen.blit(game_label, (width/4, height/2))
 
     # Render text for debug
     if DEBUG:
         label = debugfont.render("fps:"+str(int(clock.get_fps()))
                               +" monsters:"+str(len(enemyGroup))
-                              +" points: " + str(playerGroup.sprites()[0].points)
-                              +" health: " + str(playerGroup.sprites()[0].health)
+                              +" points: " + str(player.points)
+                              +" health: " + str(player.health)
                               
                               , 1, (0,0,0))
         screen.blit(label, (20, 10))

@@ -39,6 +39,7 @@ class Player(pygame.sprite.Sprite):
                 self.images[anim_type].append(pygame.image.load(cur_image_filename).convert_alpha())
         self.image = self.images['standing'][0]
         
+        # Set up animation counters
         self.anim_image_walking = 0
         self.anim_image_jumping = 0
         self.anim_frame_counter_walking = 0
@@ -51,8 +52,14 @@ class Player(pygame.sprite.Sprite):
         
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect()
-        self.rect.bottomleft = bottomleft
+        self.startloc = bottomleft
         
+        self.reset()
+        
+    """
+    Reset variables. Used when the player dies or the game restarts
+    """
+    def reset(self):
         # Current speeds
         self.vel_x = 0
         self.vel_y = 0
@@ -69,6 +76,10 @@ class Player(pygame.sprite.Sprite):
         # Set Base Health
         self.health = 10
         
+        # Set starting location (which comes from 
+        self.rect.bottomleft = self.startloc
+        
+    
     """
     Block Collision
     """
@@ -170,13 +181,13 @@ class Player(pygame.sprite.Sprite):
             
         # TODO fix these anims
         # Walking Animation
-#         if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]) and self.on_ground:
+#         if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
 #             # Animate the walking!
 #             self.anim_frame_counter_walking = (self.anim_frame_counter_walking + 1) % self.anim_frame_max_walking
 #             if self.anim_frame_counter_walking == 0:
 #                 self.anim_image_walking = (self.anim_image_walking + 1) % len(self.images['walking'])
 #                 self.image = self.images['walking'][self.anim_image_walking]
-#         # Standing Animation
+        # Standing Animation
 #         # Jumping Animation
 #         elif not self.on_ground:
 #             # Animate the jumping!
