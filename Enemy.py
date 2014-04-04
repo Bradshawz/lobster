@@ -10,7 +10,7 @@ class Enemy(pygame.sprite.Sprite):
     Can move and kill the player.
     Has an image, rect-bounds.
     """
-    def __init__(self, image_filename, pos_x, pos_y, enemytype):
+    def __init__(self, images_dict, pos_x, pos_y, enemytype):
         """
         Pass in the filename of the image to represent
         this enemy.
@@ -22,8 +22,13 @@ class Enemy(pygame.sprite.Sprite):
         # Call the parent class (Sprite) constructor)
         pygame.sprite.Sprite.__init__(self)
         
-        # Set the image of the player Sprite
-        self.image = pygame.image.load(image_filename).convert_alpha()
+        # Create all animations, and set the default animation
+        self.cur_anim = ''
+        self.anims = dict()
+        for name, data in images_dict.items():
+            self.create_animation(name, data['filenames'], data['frames_between'])
+        self.set_animation("walking")
+        self.image = self.anims[self.cur_anim]['images'][0]
         
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect(center=(pos_x,pos_y))
@@ -143,9 +148,9 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # Bounce off the enemy
                 player.vel_y = player.jump_speed/-1.5
-                # TODO::Turn the enemy's animation to a "squished" animation
                 
-                # TODO::After 500ms, turn the enemy into a "poof" animation
+                # Animate the death of said enemy
+                self.set_animation("squished")
                 
                 isSquished = True # Squished
                 
@@ -253,6 +258,9 @@ class Enemy(pygame.sprite.Sprite):
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
         
+        # Animate
+        self.animate()
+        
         # Check collision with player
         if self.enemy_type == "basic":
             isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
@@ -262,6 +270,10 @@ class Enemy(pygame.sprite.Sprite):
         
         if self.enemy_type == "basic":
             return isSquished
+
+    def send_to_heaven(self, dyingEnemyGroup):
+        # NOOOOOOOOOOOOOOOOOOOOOOOOOO
+        dyingEnemyGroup.remove(self)
 
     def basic_movement(self, waypoint, player):
         """

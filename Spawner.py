@@ -28,8 +28,21 @@ class Spawner(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
         # Dictionary of enemy images
-        self.image_dict = {"basic":"images/chef_standing.png",
-                           "spiky":"images/enemy_tmp.png"}
+        basic_anims_dict = {"walking" : {"filenames" : ["images/chef_standing.png"],
+                                         "frames_between" : 100
+                                         },
+                            "squished" : {"filenames" : ["images/chef_squished_0.png",
+                                                         "images/chef_squished_1.png",
+                                                         "images/chef_squished_2.png"],
+                                          "frames_between" : 8
+                                         },
+                            }
+        spiky_anims_dict = {"walking" : {"filenames" : ["images/chef_spiky_standing.png"],
+                                         "frames_between" : 100
+                                         },
+                            }
+        self.anims_dict = {"basic": basic_anims_dict,
+                          "spiky": spiky_anims_dict}
 
         self.rect.center = (x, y)
 
@@ -43,13 +56,13 @@ class Spawner(pygame.sprite.Sprite):
 
     def spawn(self, enemyGroup):
         if pygame.time.get_ticks()//self.basic_spawnnumber != 0:
-            enemy = Enemy(self.image_dict["basic"], 
+            enemy = Enemy(self.anims_dict["basic"], 
                           self.rect.x+16, self.rect.y+16, "basic")
             enemy.add(enemyGroup)
             self.basic_spawnnumber += self.basic_spawn_time
 
         if pygame.time.get_ticks()//self.spiky_spawnnumber != 0:
-            enemy = Enemy(self.image_dict["spiky"], 
+            enemy = Enemy(self.anims_dict["spiky"], 
                           self.rect.x+16, self.rect.y+16, "spiky")
             enemy.add(enemyGroup) 
             self.spiky_spawnnumber += self.spiky_spawn_time

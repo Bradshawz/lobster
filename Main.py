@@ -32,8 +32,8 @@ clock = pygame.time.Clock()
 
 # Initialize fonts for printing to screen
 debugfont = pygame.font.SysFont("monospace", 15)
-gamefont = pygame.font.SysFont("monospace",30)
-game_label = gamefont.render("TestLabel", 1, (0,0,0))
+gamefont = pygame.font.SysFont("comicsansms",30)
+game_label = gamefont.render("", 1, (0,0,0))
 
 # Create a white background
 bg = pygame.Surface(screen.get_size())
@@ -72,7 +72,9 @@ player = Player(player_anims, game_map.get_player_pos()) # Create the player Spr
 player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create an enemy group
-enemyGroup = pygame.sprite.Group() # Create the Group
+enemyGroup = pygame.sprite.Group()
+# Create a group for dying (non-interactive) enemies
+dyingEnemyGroup = pygame.sprite.Group()
 
 # To be used on game restart or on
 # player death/game over
@@ -110,6 +112,8 @@ while True:
             resetGameTimer.start()
             game_label = gamefont.render("Game over! Points: {}".format(player.points),
                                          1, (0,0,0))
+    if player.rect.x < 0 or player.rect.x > screen.get_size()[0]:
+        player.rect.x = screen.get_size()[0]//2
         
 
     #--------------------------------------------
@@ -124,6 +128,16 @@ while True:
             hasSquishedSomeoneAlready = True
     if to_remove != None:
         enemyGroup.remove(to_remove)
+        
+        dyingEnemyGroup.add(to_remove)
+        oneAnimFrames = to_remove.anims[to_remove.cur_anim]['frames_between'] * len(to_remove.anims[to_remove.cur_anim]['images'])
+        oneAnimTime = 6/7 * oneAnimFrames / clock.get_fps()
+        removeEnemyTimer = Timer(oneAnimTime, to_remove.send_to_heaven, [dyingEnemyGroup])
+        removeEnemyTimer.start()
+    
+    # Update the animations of dying enemies
+    for e in dyingEnemyGroup:
+        e.animate()
     
     #---------------------------------------------
     # Monster Spawning
@@ -142,6 +156,7 @@ while True:
     blockGroup.draw(screen)
     spawnerGroup.draw(screen)
     enemyGroup.draw(screen)
+    dyingEnemyGroup.draw(screen)
     if player.temp_invulnerable:
         # If we were just hit, we will be blinking
         if player.blink_visible:
