@@ -25,27 +25,19 @@ class Player(pygame.sprite.Sprite):
         this player.
         
         images_dict should have:
-            keys: 'standing', 'walking'
+            keys: 'standing', 'walking', 'jumping'
             values: a list of image filenames
         """        
         # Call the parent class (Sprite) constructor)
         pygame.sprite.Sprite.__init__(self)
         
-        # Create images for all of the animations, and set the default image
-        self.images = dict()
-        for anim_type, image_filenames in images_dict.items():
-            self.images[anim_type] = []
-            for cur_image_filename in image_filenames:
-                self.images[anim_type].append(pygame.image.load(cur_image_filename).convert_alpha())
-        self.image = self.images['standing'][0]
-        
-        # Set up animation counters
-        self.anim_image_walking = 0
-        self.anim_image_jumping = 0
-        self.anim_frame_counter_walking = 0
-        self.anim_frame_counter_jumping = 0
-        self.anim_frame_max_walking = 2
-        self.anim_frame_max_jumping = 8
+        # Create all animations, and set the default animation
+        self.cur_anim = ''
+        self.anims = dict()
+        for name, data in images_dict.items():
+            self.create_animation(name, data['filenames'], data['frames_between'])
+        self.set_animation("standing")
+        self.image = self.anims[self.cur_anim]['images'][0]
         
         # Set the collision mask based on the image
         self.mask = pygame.mask.from_surface(self.image)
@@ -85,6 +77,46 @@ class Player(pygame.sprite.Sprite):
         
         # Set starting location (which comes from 
         self.rect.bottomleft = self.startloc
+    
+    def create_animation(self, name, filenames, frames_between):
+        self.anims[name] = dict()
+        
+        # Images
+        self.anims[name]['images'] = []
+        for cur_image_filename in filenames:
+            self.anims[name]['images'].append(pygame.image.load(cur_image_filename).convert_alpha())
+        
+        # Timing
+        self.anims[name]['frames_between'] = frames_between
+        self.anims[name]['counter'] = 0
+        self.anims[name]['cur_image_index'] = 0
+    
+    def set_animation(self, name):
+        self.cur_anim = name
+        
+    def animate(self):
+        # To be called every frame
+        this_anim = self.anims[self.cur_anim]
+        
+        # Increment the counter for our current animation
+        this_anim['counter'] += 1
+        
+        # If we've hit the threshold ('frames_between'), then move to the
+        # next image in the sequence for this animation (which could mean looping
+        # back to the front)
+        if this_anim['counter'] >= this_anim['frames_between']:
+            this_anim['counter'] = 0
+            
+            # If we're at the end of the list,
+            if this_anim['cur_image_index'] >= len(this_anim['images'])-1:
+                # Then loop back to the front
+                this_anim['cur_image_index'] = 0
+            else:
+                # Otherwise, go to the next one
+                this_anim['cur_image_index'] += 1
+        
+        # Set the image
+        self.image = this_anim['images'][this_anim['cur_image_index']]
         
     def set_vulnerable(self):
         self.temp_invulnerable = False
@@ -126,6 +158,7 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
+                        self.set_animation("standing")
     
     """
     Update player based on key input, gravity and collisions
@@ -135,6 +168,7 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_UP] and self.on_ground:
             self.vel_y -= self.jump_speed
             self.on_ground = False
+            self.set_animation("jumping")
         
         # Left/right movement
         if keys[pygame.K_LEFT]:
@@ -149,6 +183,12 @@ class Player(pygame.sprite.Sprite):
             # But not too fast
             if self.vel_x > self.max_move_speed:
                 self.vel_x = self.max_move_speed
+        
+        if self.on_ground:
+            if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
+                self.set_animation("walking")
+            else:
+                self.set_animation("standing")
         
         # Gravity
         if not self.on_ground:
@@ -166,23 +206,8 @@ class Player(pygame.sprite.Sprite):
         if not (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
             self.vel_x = 0
             
-        # TODO fix these anims
-        # Walking Animation
-#         if (keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]):
-#             # Animate the walking!
-#             self.anim_frame_counter_walking = (self.anim_frame_counter_walking + 1) % self.anim_frame_max_walking
-#             if self.anim_frame_counter_walking == 0:
-#                 self.anim_image_walking = (self.anim_image_walking + 1) % len(self.images['walking'])
-#                 self.image = self.images['walking'][self.anim_image_walking]
-        # Standing Animation
-#         # Jumping Animation
-#         elif not self.on_ground:
-#             # Animate the jumping!
-#             self.anim_frame_counter_jumping = (self.anim_frame_counter_jumping + 1) % self.anim_frame_max_jumping
-#             if self.anim_frame_counter_jumping == 0:
-#                 self.anim_image_jumping = (self.anim_image_jumping + 1) % len(self.images['jumping'])
-#                 self.image = self.images['jumping'][self.anim_image_jumping]
-        
+        # Animate
+        self.animate()
             
         # Move horizontally, then handle horizontal collisions
         self.rect.left += self.vel_x

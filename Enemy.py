@@ -108,6 +108,8 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # Set player to be temporarily invulnerable and TODO::flashing
                 player.temp_invulnerable = True
+                # TODO::make the blinking animation
+                # player.set_animation("blinking")
                 setVulnerableTimer = Timer(2.0, player.set_vulnerable)
                 setVulnerableTimer.start()
                 
