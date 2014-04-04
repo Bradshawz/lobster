@@ -43,11 +43,11 @@ waypointList = game_map.get_waypoints()
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player_anims = {"standing" : ["lobster_standing.png"],
-                "walking"  : ["lobster_walking_0.png",
-                              "lobster_walking_1.png"],
-                "jumping"  : ["lobster_jumping_0.png",
-                              "lobster_jumping_1.png"]
+player_anims = {"standing" : ["images/lobster_standing.png"],
+                "walking"  : ["images/lobster_walking_0.png",
+                              "images/lobster_walking_1.png"],
+                "jumping"  : ["images/lobster_jumping_0.png",
+                              "images/lobster_jumping_1.png"]
                 }
 player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group

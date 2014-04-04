@@ -26,9 +26,9 @@ class Map:
         =    platform
         -    platform that you can jump up through
     """
-    char_to_filename = {'=' : 'block_blue.png',
-                        '-' : 'block_yellow.png',
-                        's' : 'castle.png'
+    char_to_filename = {'=' : 'images/block_blue.png',
+                        '-' : 'images/block_yellow.png',
+                        's' : 'images/castle.png'
                         }
     
     def __init__(self, filename="getonmy.lvl"):

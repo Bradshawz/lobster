@@ -34,6 +34,6 @@ class Spawner(pygame.sprite.Sprite):
 
     def spawn(self, enemyGroup):
         if pygame.time.get_ticks()//self.spawnnumber != 0:
-            enemy = Enemy("enemy_tmp.png", self.rect.x+16, self.rect.y+16) # Create the enemy
+            enemy = Enemy("images/enemy_tmp.png", self.rect.x+16, self.rect.y+16) # Create the enemy
             enemy.add(enemyGroup) # Add the enemy Sprite to the Group
             self.spawnnumber += self.base_spawn_time
