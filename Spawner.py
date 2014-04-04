@@ -6,7 +6,7 @@ class Spawner(pygame.sprite.Sprite):
     Spawns a block that spawns enemies. Can pass in a monster pattern
     to spawn monsters at different rates.
     """  
-    def __init__(self, image_filename, x, y):      
+    def __init__(self, image_filename, x, y, spawntime):      
         """
         Pass in the filename of the image to represent
         this spawner.
@@ -28,11 +28,12 @@ class Spawner(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         
         self.rect.center = (x, y)
-        self.spawnnumber = 3000
+        self.base_spawn_time = spawntime
+        self.spawnnumber = self.base_spawn_time
 
 
     def spawn(self, enemyGroup):
         if pygame.time.get_ticks()//self.spawnnumber != 0:
-            enemy = Enemy("chef_standing.png", self.rect.x+16, self.rect.y+16) # Create the enemy
+            enemy = Enemy("images/chef_standing.png", self.rect.x+16, self.rect.y+16) # Create the enemy
             enemy.add(enemyGroup) # Add the enemy Sprite to the Group
-            self.spawnnumber += 3000
+            self.spawnnumber += self.base_spawn_time

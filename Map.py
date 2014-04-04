@@ -26,9 +26,9 @@ class Map:
         =    platform
         -    platform that you can jump up through
     """
-    char_to_filename = {'=' : 'block_blue.png',
-                        '-' : 'block_yellow.png',
-                        's' : 'castle.png'
+    char_to_filename = {'=' : 'images/block_blue.png',
+                        '-' : 'images/block_yellow.png',
+                        's' : 'images/castle.png'
                         }
     
     def __init__(self, filename="getonmy.lvl"):
@@ -40,6 +40,7 @@ class Map:
         self.spawner_list = []
         self.player_pos = (0,0)
         self.waypoint_list = []
+        s_n = 0
         
         # Iterate over each row in the map
         cur_x = -16
@@ -75,10 +76,22 @@ class Map:
                     if char == 'p':
                         self.player_pos = (cur_x, cur_y)
 
-                    # Spawner
+                    #------------------------------------
+                    # Spawner and Spawner Characteristics
+                    # spawnlist -> [spawntime]
+                    # s_n is the spawner number, topleft
+                    # to bottom right
+                    #------------------------------------
+                    spawn_list = [[3000],
+                                  [4000],
+                                  [5000],
+                                  [6000]]
                     if char == 's':
-                        spawner = Spawner(self.char_to_filename[char], cur_x, cur_y)
+                        spawner = Spawner(self.char_to_filename[char],
+                                          cur_x, cur_y,
+                                          spawn_list[s_n][0])
                         self.spawner_list.append(spawner)
+                        s_n += 1
 
                     # Waypoint
                     if char == 'w':

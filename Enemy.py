@@ -34,7 +34,7 @@ class Enemy(pygame.sprite.Sprite):
         self.on_ground = False
         self.move_speed = 1
         self.max_move_speed = 2
-        self.movecounter = 20
+        self.movecounter = 140
         
     """
     Block Collision
@@ -49,6 +49,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.rect.right = block.rect.left
                 else:
                     self.rect.right = block.rect.left
+                    self.move = 0
             if xvel < 0:
                 # going <--
                 if block.can_jump_through:
@@ -56,6 +57,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.rect.left = block.rect.right
                 else:
                     self.rect.left = block.rect.right
+                    self.move = 1
             
             # Check for falling collision
             if yvel > 0:
@@ -108,15 +110,19 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, blockGroup, screen, waypoint, player, hasSquishedSomeoneAlready):
         
         #Update movement
-        self.basic_movement(waypoint, player)
-
+        if self.movecounter == 0:
+            self.random_movement()
+            self.movecounter = 140
+ 
         # Left/right movement
+        #Left
         if self.move == 0:
             # Go faster
             self.vel_x -= self.move_speed
             # But not too fast
             if self.vel_x < -1 * self.max_move_speed:
                 self.vel_x = -1 * self.max_move_speed
+        #Right
         if self.move == 1:
             # Go faster
             self.vel_x += self.move_speed
@@ -160,7 +166,7 @@ class Enemy(pygame.sprite.Sprite):
         closestval = 100000
         closewaypoint = (0,0)
         #Check if the player is on the same floor
-        if abs(player.rect.bottom - self.rect.top) < 70:
+        if abs(player.rect.bottom - self.rect.top) < 32:
             if player.rect.right > self.rect.right:
                 self.move = 1
                 return 
@@ -177,9 +183,17 @@ class Enemy(pygame.sprite.Sprite):
             if abs(c[0]-self.rect.center[0]) < closestval:
                 closestval = abs(c[0]-self.rect.center[0])
                 closewaypoint = c
-        if self.rect.right < closewaypoint[0]+16:
+        if self.rect.right < closewaypoint[0]:
             self.move = 1
             return
-        if self.rect.right > closewaypoint[0]+16:
+        if self.rect.right > closewaypoint[0]:
             self.move = 0
             return         
+        
+    def  random_movement(self):
+        """
+        Move in a random direction
+        """
+        self.move = random.randint(0,1)
+        
+    
