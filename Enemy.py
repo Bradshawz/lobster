@@ -149,8 +149,8 @@ class Enemy(pygame.sprite.Sprite):
             # Set player to be temporarily invulnerable and TODO::flashing
             if not player.temp_invulnerable:
                 player.temp_invulnerable = True
-                setVulnerableTimer = Timer(2.0, player.set_vulnerable)
-                setVulnerableTimer.start()
+                set_vulnerable_timer = Timer(2.0, player.set_vulnerable)
+                set_vulnerable_timer.start()
                 
 
     """
