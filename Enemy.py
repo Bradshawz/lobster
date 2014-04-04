@@ -1,6 +1,7 @@
 import pygame
 import random
 import Physics
+from threading import Timer
 
 class Enemy(pygame.sprite.Sprite):
     """
@@ -35,6 +36,8 @@ class Enemy(pygame.sprite.Sprite):
         self.move_speed = 1
         self.max_move_speed = 2
         self.movecounter = 140
+        
+        self.currently_dying = False
         
     """
     Block Collision
@@ -84,7 +87,8 @@ class Enemy(pygame.sprite.Sprite):
         if pygame.sprite.collide_rect(self, player):
             if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
                 # Player squishes this enemy
-                player.points += 1
+                if not player.currently_dying:
+                    player.points += 1
                 
                 # Bounce off the enemy
                 player.vel_y = player.jump_speed/-1.5
@@ -93,15 +97,22 @@ class Enemy(pygame.sprite.Sprite):
                 # TODO::After 500ms, turn the enemy into a "poof" animation
                 
                 isSquished = True # Squished
-            else:
+                
+            elif not player.temp_invulnerable:
                 # We've been hit! Get the lifeboats! Ready the guns!
-                if not hasSquishedSomeoneAlready:
+                if not hasSquishedSomeoneAlready and not player.currently_dying:
                     player.health -= 1
                 
                 # bounce the enemy back
                 self.vel_x *= -6
                 
-                isSquished = False # Not squished
+                # Set player to be temporarily invulnerable and TODO::flashing
+                player.temp_invulnerable = True
+                setVulnerableTimer = Timer(2.0, player.set_vulnerable)
+                setVulnerableTimer.start()
+                
+                isSquished = False # Enemy not squished
+
         return isSquished
 
     """
@@ -150,8 +161,10 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
-        isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
         
+        # Check collision with player
+        isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
+            
         self.movecounter -= 1
         
         return isSquished

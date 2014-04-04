@@ -75,11 +75,20 @@ class Player(pygame.sprite.Sprite):
         
         # Set Base Health
         self.health = 10
+    
+        # used to ensure that we don't restart the game
+        # over and over
+        self.currently_dying = False
+        
+        # Used when we take damage from an enemy
+        self.temp_invulnerable = False
         
         # Set starting location (which comes from 
         self.rect.bottomleft = self.startloc
         
-    
+    def set_vulnerable(self):
+        self.temp_invulnerable = False
+
     """
     Block Collision
     """
@@ -117,28 +126,6 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
-                        
-    """
-    Enemy Collision
-    """
-    def collide_enemy(self, yvel, enemyGroup):
-        for enemy in pygame.sprite.spritecollide(self, enemyGroup, False):
-            if yvel > 0 and self.rect.bottom - yvel < enemy.rect.top:
-                # Squish the enemy
-                self.points += 1
-                enemyGroup.remove(enemy)
-                
-                # Bounce off the enemy
-                self.vel_y = self.jump_speed/-1.5
-                # TODO::Turn the enemy's animation to a "squished" animation
-                
-                # TODO::After 500ms, turn the enemy into a "poof" animation
-            else:
-                # We've been hit! Get the lifeboats! Ready the guns!
-                self.health -= 1
-                
-                # bounce the enemy back
-                enemy.vel_x *= -3
     
     """
     Update player based on key input, gravity and collisions
@@ -205,5 +192,4 @@ class Player(pygame.sprite.Sprite):
         self.rect.top += self.vel_y
         self.on_ground = False
         self.collide(0, self.vel_y, blockGroup)
-        self.collide_enemy(self.vel_y, enemyGroup)
                 

@@ -98,19 +98,26 @@ while True:
     player.update(keys_down, blockGroup, enemyGroup, screen)
     if player.health <= 0:
         # Player has died
-        game_label = gamefont.render("Game over! Points: {}".format(player.points),
+        if not player.currently_dying:
+            player.currently_dying = True
+            resetGameTimer = Timer(3.0, resetGame)
+            resetGameTimer.start()
+            game_label = gamefont.render("Game over! Points: {}".format(player.points),
                                          1, (0,0,0))
-        resetGameTimer = Timer(3.0, resetGame)
-        resetGameTimer.start()
+        
 
     #--------------------------------------------
     # Enemy Movement    
     #--------------------------------------------
     hasSquishedSomeoneAlready = False
+    to_remove = None
     for e in enemyGroup:
         squished = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
         if squished:
+            to_remove = e
             hasSquishedSomeoneAlready = True
+    if to_remove != None:
+        enemyGroup.remove(to_remove)
     
     #---------------------------------------------
     # Monster Spawning
