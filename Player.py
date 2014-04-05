@@ -71,7 +71,7 @@ class Player(pygame.sprite.Sprite):
         # Set the last recorded direction
         # Used for punching/kicking
         self.facing_left = True
-        self.punching = True
+        self.punching = False
         self.punching_left = self.facing_left
         self.punching_time = 1.0
         self.can_punch = True

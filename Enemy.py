@@ -162,8 +162,7 @@ class Enemy(pygame.sprite.Sprite):
                     player.points += 1
                 
                 # Animate our death
-                # TODO::punch death animation instead of squish animation
-                self.set_animation("squished")
+                self.set_animation("punched")
                 punched = True
                 
             elif not player.temp_invulnerable:
@@ -199,11 +198,10 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # Player gets a point
                 if not player.currently_dying:
-                    player.points += 1
+                    player.points += 2
                 
                 # Animate our death
-                # TODO::punch death animation instead of squish animation
-                self.set_animation("squished")
+                self.set_animation("punched")
                 punched = True
                     
             elif not player.temp_invulnerable:

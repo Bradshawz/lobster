@@ -36,13 +36,19 @@ class Spawner(pygame.sprite.Sprite):
                                                          "images/chef_squished_2.png"],
                                           "frames_between" : 8
                                          },
+                            "punched" : {"filenames" : ["images/chef_punched_0.png",
+                                                        "images/chef_punched_1.png",
+                                                        "images/chef_punched_2.png",
+                                                        "images/chef_punched_3.png"],
+                                         "frames_between" : 8}
                             }
         spiky_anims_dict = {"walking" : {"filenames" : ["images/chef_spiky_standing.png"],
                                          "frames_between" : 100
                                          },
-                            "squished" : {"filenames" : ["images/chef_squished_0.png",
-                                                         "images/chef_squished_1.png",
-                                                         "images/chef_squished_2.png"],
+                            "punched" : {"filenames" : ["images/chef_spiky_punched_0.png",
+                                                         "images/chef_spiky_punched_1.png",
+                                                         "images/chef_spiky_punched_2.png",
+                                                         "images/chef_spiky_punched_3.png"],
                                           "frames_between" : 8
                                           },
                             }
