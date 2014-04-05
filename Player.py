@@ -2,7 +2,7 @@ import pygame
 import Physics
 from threading import Timer
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite):    
     """
     Player character. Subclasses Character->Sprite.
     
@@ -20,7 +20,28 @@ class Player(pygame.sprite.Sprite):
     frame to update the actual position to the "new" calculated position.
     """
     
-    def __init__(self, images_dict, bottomleft):
+    PLAYER_ANIMS = {"standing" : {"filenames" : ["images/lobster_standing.png"],
+                              "frames_between" : 100,
+                              },
+                "walking"  : {"filenames" : ["images/lobster_walking_0.png",
+                                             "images/lobster_walking_1.png"],
+                              "frames_between" : 10
+                              },
+                "jumping"  : {"filenames" : ["images/lobster_jumping_0.png",
+                                             "images/lobster_jumping_1.png"],
+                              "frames_between" : 15
+                              },
+                "punching_left" : {"filenames" : ["images/lobster_punching_left_0.png",
+                                                  "images/lobster_punching_left_1.png"],
+                                   "frames_between" : 30
+                                   },
+                "punching_right" : {"filenames" : ["images/lobster_punching_right_0.png",
+                                                  "images/lobster_punching_right_1.png"],
+                                   "frames_between" : 30
+                                   }
+                }
+    
+    def __init__(self, bottomleft):
         """
         Pass in the filename of the image to represent
         this player.
@@ -35,7 +56,7 @@ class Player(pygame.sprite.Sprite):
         # Create all animations, and set the default animation
         self.cur_anim = ''
         self.anims = dict()
-        for name, data in images_dict.items():
+        for name, data in self.PLAYER_ANIMS.items():
             self.create_animation(name, data['filenames'], data['frames_between'])
         self.set_animation("standing")
         self.image = self.anims[self.cur_anim]['images'][0]
