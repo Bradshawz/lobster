@@ -67,13 +67,13 @@ player_anims = {"standing" : {"filenames" : ["images/lobster_standing.png"],
                                              "images/lobster_jumping_1.png"],
                               "frames_between" : 15
                               },
-                "punching_left" : {"filenames" : ["images/chef_squished_1.png",
-                                                  "images/chef_squished_0.png"],
-                                   "frames_between" : 60
+                "punching_left" : {"filenames" : ["images/lobster_punching_left_0.png",
+                                                  "images/lobster_punching_left_1.png"],
+                                   "frames_between" : 30
                                    },
-                "punching_right" : {"filenames" : ["images/chef_squished_2.png",
-                                                  "images/chef_squished_0.png"],
-                                   "frames_between" : 60
+                "punching_right" : {"filenames" : ["images/lobster_punching_right_0.png",
+                                                  "images/lobster_punching_right_1.png"],
+                                   "frames_between" : 30
                                    }
                 }
 player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
