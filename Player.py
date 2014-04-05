@@ -1,5 +1,6 @@
 import pygame
 import Physics
+from threading import Timer
 
 class Player(pygame.sprite.Sprite):
     """
@@ -45,6 +46,15 @@ class Player(pygame.sprite.Sprite):
         # Fetch the rectangle object that has the dimensions of the image
         self.rect = self.image.get_rect()
         self.startloc = bottomleft
+        
+        # Set the last recorded direction
+        # Used for punching/kicking
+        self.facing_left = True
+        self.punching = True
+        self.punching_left = self.facing_left
+        self.punching_time = 1.0
+        self.can_punch = True
+        self.punch_cooldown = 2.0
         
         self.reset()
         
@@ -124,6 +134,12 @@ class Player(pygame.sprite.Sprite):
     def set_vulnerable(self):
         self.temp_invulnerable = False
         
+    def stop_punching(self):
+        self.punching = False
+    
+    def reset_can_punch(self):
+        self.can_punch = True
+
     """
     Block Collision
     """
@@ -161,7 +177,8 @@ class Player(pygame.sprite.Sprite):
                     if self.rect.top - yvel > block.rect.bottom:
                         self.rect.top = block.rect.bottom
                         self.vel_y = 0
-                        self.set_animation("standing")
+                        if not self.punching:
+                            self.set_animation("standing")
     
     """
     Update player based on key input, gravity and collisions
@@ -171,23 +188,48 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_UP] and self.on_ground:
             self.vel_y -= self.jump_speed
             self.on_ground = False
-            self.set_animation("jumping")
+            if not self.punching:
+                self.set_animation("jumping")
         
-        # Left/right movement
+        # Left-wards movement
         if keys[pygame.K_LEFT]:
+            # Update direction we're moving
+            self.facing_left = True
+            
             # Go faster
             self.vel_x -= self.move_speed
             # But not too fast
             if self.vel_x < -1 * self.max_move_speed:
                 self.vel_x = -1 * self.max_move_speed
+        
+        # Right-wards movement
         if keys[pygame.K_RIGHT]:
+            # Update direction we're moving
+            self.facing_left = False
+            
             # Go faster
             self.vel_x += self.move_speed
             # But not too fast
             if self.vel_x > self.max_move_speed:
                 self.vel_x = self.max_move_speed
         
-        if self.on_ground:
+        # Punching
+        if keys[pygame.K_SPACE] and self.can_punch:
+            print("Punch!")
+            
+            self.punching = True
+            self.punching_left = self.facing_left
+            
+            self.set_animation("punching_" + ("left" if self.punching_left else "right"))
+            
+            self.can_punch = False
+            can_punch_again_timer = Timer(self.punch_cooldown, self.reset_can_punch)
+            punch_ended_timer = Timer(self.punching_time, self.stop_punching)
+            can_punch_again_timer.start()
+            punch_ended_timer.start()
+        
+        # Set walking or standing animations
+        if self.on_ground and not self.punching:
             if keys[pygame.K_LEFT] or keys[pygame.K_RIGHT]:
                 self.set_animation("walking")
             else:

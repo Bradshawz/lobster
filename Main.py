@@ -1,11 +1,13 @@
+from sys import exit
+from threading import Timer
+
 import pygame
 from pygame.locals import *
-from sys import exit
 
-from Player import *
 from Block import *
 from Enemy import *
 from Map import *
+from Player import *
 from Spawner import *
 
 # Importing Timer to schedule things
@@ -18,8 +20,6 @@ from Spawner import *
 # }
 # changeImageTimer = Timer(secondsToWait, changeImage, [list_of, parameters])
 # a la http://stackoverflow.com/questions/16578652/threading-timer
-from threading import Timer
-
 # Debug
 DEBUG = True
 
@@ -66,7 +66,15 @@ player_anims = {"standing" : {"filenames" : ["images/lobster_standing.png"],
                 "jumping"  : {"filenames" : ["images/lobster_jumping_0.png",
                                              "images/lobster_jumping_1.png"],
                               "frames_between" : 15
-                              }
+                              },
+                "punching_left" : {"filenames" : ["images/chef_squished_1.png",
+                                                  "images/chef_squished_0.png"],
+                                   "frames_between" : 60
+                                   },
+                "punching_right" : {"filenames" : ["images/chef_squished_2.png",
+                                                  "images/chef_squished_0.png"],
+                                   "frames_between" : 60
+                                   }
                 }
 player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
