@@ -40,6 +40,11 @@ class Spawner(pygame.sprite.Sprite):
         spiky_anims_dict = {"walking" : {"filenames" : ["images/chef_spiky_standing.png"],
                                          "frames_between" : 100
                                          },
+                            "squished" : {"filenames" : ["images/chef_squished_0.png",
+                                                         "images/chef_squished_1.png",
+                                                         "images/chef_squished_2.png"],
+                                          "frames_between" : 8
+                                          },
                             }
         self.anims_dict = {"basic": basic_anims_dict,
                           "spiky": spiky_anims_dict}

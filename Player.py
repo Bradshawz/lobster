@@ -236,7 +236,6 @@ class Player(pygame.sprite.Sprite):
         
         # Punching
         if keys[pygame.K_SPACE] and self.can_punch:
-            print("Punch!")
             
             self.punching = True
             self.punching_left = self.facing_left

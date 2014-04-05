@@ -56,27 +56,7 @@ waypointList = game_map.get_waypoints()
 
 # Create the player
 playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player_anims = {"standing" : {"filenames" : ["images/lobster_standing.png"],
-                              "frames_between" : 100,
-                              },
-                "walking"  : {"filenames" : ["images/lobster_walking_0.png",
-                                             "images/lobster_walking_1.png"],
-                              "frames_between" : 10
-                              },
-                "jumping"  : {"filenames" : ["images/lobster_jumping_0.png",
-                                             "images/lobster_jumping_1.png"],
-                              "frames_between" : 15
-                              },
-                "punching_left" : {"filenames" : ["images/lobster_punching_left_0.png",
-                                                  "images/lobster_punching_left_1.png"],
-                                   "frames_between" : 30
-                                   },
-                "punching_right" : {"filenames" : ["images/lobster_punching_right_0.png",
-                                                  "images/lobster_punching_right_1.png"],
-                                   "frames_between" : 30
-                                   }
-                }
-player = Player(player_anims, game_map.get_player_pos()) # Create the player Sprite
+player = Player(game_map.get_player_pos()) # Create the player Sprite
 player.add(playerGroup) # Add the player Sprite to the Group
 
 # Create an enemy group
@@ -128,19 +108,20 @@ while True:
     # Enemy Movement    
     #--------------------------------------------
     hasSquishedSomeoneAlready = False
-    to_remove = None
+    to_remove = []
     for e in enemyGroup:
-        squished = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
-        if squished:
-            to_remove = e
-            hasSquishedSomeoneAlready = True
-    if to_remove != None:
-        enemyGroup.remove(to_remove)
+        squished, punched = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
+        if squished or punched:
+            to_remove.append(e)
+            if squished:
+                hasSquishedSomeoneAlready = True
+    for dead_enemy in to_remove:
+        enemyGroup.remove(dead_enemy)
         
-        dyingEnemyGroup.add(to_remove)
-        oneAnimFrames = to_remove.anims[to_remove.cur_anim]['frames_between'] * len(to_remove.anims[to_remove.cur_anim]['images'])
+        dyingEnemyGroup.add(dead_enemy)
+        oneAnimFrames = dead_enemy.anims[dead_enemy.cur_anim]['frames_between'] * len(dead_enemy.anims[dead_enemy.cur_anim]['images'])
         oneAnimTime = 6/7 * oneAnimFrames / clock.get_fps()
-        removeEnemyTimer = Timer(oneAnimTime, to_remove.send_to_heaven, [dyingEnemyGroup])
+        removeEnemyTimer = Timer(oneAnimTime, dead_enemy.send_to_heaven, [dyingEnemyGroup])
         removeEnemyTimer.start()
     
     # Update the animations of dying enemies

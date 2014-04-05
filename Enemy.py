@@ -139,7 +139,7 @@ class Enemy(pygame.sprite.Sprite):
     Collision with Player and basic enemy
     """
     def player_collide(self, player,hasSquishedSomeoneAlready):
-        isSquished = False
+        squished, punched = False, False
         if pygame.sprite.collide_rect(self, player):
             if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
                 # Player squishes this enemy
@@ -151,10 +151,23 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # Animate the death of said enemy
                 self.set_animation("squished")
+                squished = True # Squished
                 
-                isSquished = True # Squished
+            elif player.punching:
+                # Player got us, arggghh
+                player.punching = False # Can only punch one enemy
+                
+                # Player gets a point
+                if not player.currently_dying:
+                    player.points += 1
+                
+                # Animate our death
+                # TODO::punch death animation instead of squish animation
+                self.set_animation("squished")
+                punched = True
                 
             elif not player.temp_invulnerable:
+                
                 # We've been hit! Get the lifeboats! Ready the guns!
                 if not hasSquishedSomeoneAlready and not player.currently_dying:
                     # Lose some health
@@ -167,31 +180,32 @@ class Enemy(pygame.sprite.Sprite):
                 
                 # bounce the enemy back
                 self.vel_x *= -6
-                
-                
-                
-                isSquished = False # Enemy not squished
 
-        return isSquished
+        return (squished, punched)
 
     """
     Collision with Player and spiky enemy
     """
     def player_collide_spiky(self, player):
+        squished, punched = False, False
         if pygame.sprite.collide_rect(self, player):
             if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
-                # Player squishes this enemy and gets hurt
-                if not player.temp_invulnerable:
-                    if not player.currently_dying:
-                        player.health -= 1
-                
-                # Bounce off the enemy
+                # Bounce off the enemy (spiky can't be killed by a jump)
                 player.vel_y = player.jump_speed/-1.5
-                # TODO::Turn the enemy's animation to a "squished" animation
                 
-                # TODO::After 500ms, turn the enemy into a "poof" animation
+            elif player.punching:
+                # Player got us, arggghh
+                player.punching = False # Can only punch one enemy
                 
+                # Player gets a point
+                if not player.currently_dying:
+                    player.points += 1
                 
+                # Animate our death
+                # TODO::punch death animation instead of squish animation
+                self.set_animation("squished")
+                punched = True
+                    
             elif not player.temp_invulnerable:
                 # We've been hit! Get the lifeboats! Ready the guns!
                 if not player.currently_dying:
@@ -200,18 +214,19 @@ class Enemy(pygame.sprite.Sprite):
                 # bounce the enemy back
                 self.vel_x *= -6
                 
-            # Set player to be temporarily invulnerable and TODO::flashing
+            # Set player to be temporarily invulnerable
             if not player.temp_invulnerable:
                 player.temp_invulnerable = True
                 set_vulnerable_timer = Timer(2.0, player.set_vulnerable)
                 set_vulnerable_timer.start()
+        
+        return (squished, punched)
                 
 
     """
     Update enemy based on key input, gravity and collisions
     """
     def update(self, blockGroup, screen, waypoint, player, hasSquishedSomeoneAlready):
-        
         #Update movement
         if self.enemy_type == "basic":
             if self.movecounter == 0:
@@ -263,13 +278,12 @@ class Enemy(pygame.sprite.Sprite):
         
         # Check collision with player
         if self.enemy_type == "basic":
-            isSquished = self.player_collide(player, hasSquishedSomeoneAlready)
+            squished, punched = self.player_collide(player, hasSquishedSomeoneAlready)
         if self.enemy_type == "spiky":
-            self.player_collide_spiky(player)
+            squished, punched = self.player_collide_spiky(player)
         self.movecounter -= 1
         
-        if self.enemy_type == "basic":
-            return isSquished
+        return (squished, punched)
 
     def send_to_heaven(self, dyingEnemyGroup):
         # NOOOOOOOOOOOOOOOOOOOOOOOOOO
