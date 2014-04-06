@@ -73,15 +73,11 @@ class Spawner(pygame.sprite.Sprite):
                       self.rect.x+16, self.rect.y+16, "basic")
         enemy.add(enemyGroup)
         self.basic_spawnnumber += self.basic_spawn_time
+        self.busy_spawning_basic = 0
 
     def spawn_spiky(self, enemyGroup):
         enemy = Enemy(self.anims_dict["spiky"], 
                       self.rect.x+16, self.rect.y+16, "spiky")
         enemy.add(enemyGroup) 
         self.spiky_spawnnumber += self.spiky_spawn_time
-
-    def spawn(self, enemyGroup):
-        basic_time = Timer(self.basic_spawn_time, spawn_basic, [enemyGroup])
-        basic_time.start()
-        spiky_time = Timer(self.spiky_spawn_time, spawn_spiky(), [enemyGroup])
-        spiky_time.start()
+        self.busy_spawning_spiky = 0
