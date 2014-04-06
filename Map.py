@@ -82,10 +82,10 @@ class Map:
                     # s_n is the spawner number, topleft
                     # to bottom right
                     #------------------------------------
-                    spawn_list = [{"basic":6000, "spiky":14000},
-                                  {"basic":5000, "spiky":18000},
-                                  {"basic":4000, "spiky":20000},
-                                  {"basic":8000, "spiky":10000}]
+                    spawn_list = [{"basic":4, "spiky":13},
+                                  {"basic":3, "spiky":12},
+                                  {"basic":2, "spiky":15},
+                                  {"basic":6, "spiky":8}]
                     if char == 's':
                         spawner = Spawner(self.char_to_filename[char],
                                           cur_x, cur_y,

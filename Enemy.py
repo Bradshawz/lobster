@@ -297,7 +297,7 @@ class Enemy(pygame.sprite.Sprite):
         closestval = 100000
         closewaypoint = (0,0)
         #Check if the player is on the same floor
-        if abs(player.rect.bottom - self.rect.top) < 32:
+        if abs(player.rect.bottom - self.rect.top) < 70:
             if player.rect.right > self.rect.right:
                 self.move = 1
                 return 
@@ -307,7 +307,7 @@ class Enemy(pygame.sprite.Sprite):
 
         #Find waypoints on same floor
         for w in waypoint:
-            if abs(w[1] - self.rect.top) < 20:
+            if abs(w[1] - self.rect.top) < 40:
                 wlist.append(w)
         #Find closest waypoint
         for c in wlist:

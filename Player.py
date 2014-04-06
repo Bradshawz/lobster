@@ -97,7 +97,7 @@ class Player(pygame.sprite.Sprite):
         self.points = 0
         
         # Set Base Health
-        self.health = 10
+        self.health = 3
     
         # used to ensure that we don't restart the game
         # over and over

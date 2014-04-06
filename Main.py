@@ -4,6 +4,7 @@ from threading import Timer
 import pygame
 from pygame.locals import *
 
+from Button import *
 from Block import *
 from Enemy import *
 from Map import *
@@ -43,136 +44,188 @@ bg.fill(pygame.Color(255,255,255))
 # Set the window title and game font
 pygame.display.set_caption("Horde")
 
-# Create the map
-game_map = Map("getonmy.lvl")
-
-blockGroup = pygame.sprite.Group()
-blockGroup.add([block for block in game_map.get_blocks()])
-
-spawnerGroup = pygame.sprite.Group()
-spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
-
-waypointList = game_map.get_waypoints()
-
-# Create the player
-playerGroup = pygame.sprite.GroupSingle() # Create the Group
-player = Player(game_map.get_player_pos()) # Create the player Sprite
-player.add(playerGroup) # Add the player Sprite to the Group
-
-# Create an enemy group
-enemyGroup = pygame.sprite.Group()
-# Create a group for dying (non-interactive) enemies
-dyingEnemyGroup = pygame.sprite.Group()
-
-# To be used on game restart or on
-# player death/game over
-def resetGame():
-    global game_label # using the GLOBAL game_label
-    game_label = gamefont.render("", 1, (0,0,0))
-    player.reset()
-    enemyGroup.empty()
+# Make a button group
+buttonGroup = pygame.sprite.Group()
+start_button = Button(["images/start_0.png","images/start_1.png", "images/start_2.png"], screen.get_size()[0]/2, 100, 1, 0)
+highscores_button = Button(["images/high_0.png","images/high_1.png", "images/high_2.png"], screen.get_size()[0]/2, 200, 1, 0)
+exit_button = Button(["images/exit_0.png","images/exit_1.png", "images/exit_2.png"], screen.get_size()[0]/2, 300, 1, 0)
+start_button.add(buttonGroup)
+highscores_button.add(buttonGroup)
+exit_button.add(buttonGroup)
+gametype = 0
 
 
-# --------------------------------------------
-# Main Game Loop
-# --------------------------------------------
 while True:
     # --------------------------------------------
-    # Event Handling
+    # Menu Game Loop
     # --------------------------------------------
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            exit()
-    
-    # --------------------------------------------
-    # Player: Movement, Collisions and Death
-    # --------------------------------------------
-    
-    # Update player based on keyboard input
-    keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
+    while gametype == 0:
+        # --------------------------------------------
+        # Event Handling
+        # --------------------------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
 
-    player.update(keys_down, blockGroup, enemyGroup, screen)
-    if player.health <= 0:
-        # Player has died
-        if not player.currently_dying:
-            player.currently_dying = True
-            resetGameTimer = Timer(3.0, resetGame)
-            resetGameTimer.start()
-            game_label = gamefont.render("Game over! Points: {}".format(player.points),
-                                         1, (0,0,0))
-    if player.rect.x < 0 or player.rect.x > screen.get_size()[0]:
-        player.rect.x = screen.get_size()[0]//2
-        
+        # Get mouse buttons pressed
+        mouse_pressed = pygame.mouse.get_pressed()
 
-    #--------------------------------------------
-    # Enemy Movement    
-    #--------------------------------------------
-    hasSquishedSomeoneAlready = False
-    to_remove = []
-    for e in enemyGroup:
-        squished, punched = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
-        if squished or punched:
-            to_remove.append(e)
-            if squished:
-                hasSquishedSomeoneAlready = True
-    for dead_enemy in to_remove:
-        enemyGroup.remove(dead_enemy)
-        
-        dyingEnemyGroup.add(dead_enemy)
-        oneAnimFrames = dead_enemy.anims[dead_enemy.cur_anim]['frames_between'] * len(dead_enemy.anims[dead_enemy.cur_anim]['images'])
-        oneAnimTime = 6/7 * oneAnimFrames / clock.get_fps()
-        removeEnemyTimer = Timer(oneAnimTime, dead_enemy.send_to_heaven, [dyingEnemyGroup])
-        removeEnemyTimer.start()
-    
-    # Update the animations of dying enemies
-    for e in dyingEnemyGroup:
-        e.animate()
-    
-    #---------------------------------------------
-    # Monster Spawning
-    #---------------------------------------------
-    for spawner in spawnerGroup:
-        spawner.spawn(enemyGroup)
-    
+        # Update buttons based on mouse input
+        for button in buttonGroup:
+            if gametype == 0:
+                gametype = button.button_update(pygame.mouse.get_pos(), mouse_pressed[0])
+
+        # Redraw the Background
+        screen.blit(bg, (0,0))
+
+        # Redraw buttons
+        buttonGroup.draw(screen)
+
+        # Update the display
+        pygame.display.update()
+
+    # Create the map
+    game_map = Map("getonmy.lvl")
+
+    blockGroup = pygame.sprite.Group()
+    blockGroup.add([block for block in game_map.get_blocks()])
+
+    spawnerGroup = pygame.sprite.Group()
+    spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
+
+    waypointList = game_map.get_waypoints()
+
+    # Create the player
+    playerGroup = pygame.sprite.GroupSingle() # Create the Group
+    player = Player(game_map.get_player_pos()) # Create the player Sprite
+    player.add(playerGroup) # Add the player Sprite to the Group
+
+    # Create an enemy group
+    enemyGroup = pygame.sprite.Group()
+    # Create a group for dying (non-interactive) enemies
+    dyingEnemyGroup = pygame.sprite.Group()
+
+    # To be used on game restart or on
+    # player death/game over
+    def resetGame():
+        global game_label # using the GLOBAL game_label
+        game_label = gamefont.render("", 1, (0,0,0))
+        blockGroup.empty()
+        spawnerGroup.empty()
+        playerGroup.empty()
+        enemyGroup.empty()
+        global gametype
+        gametype = 0
+
     # --------------------------------------------
-    # Redraw everything on the screen
+    # Main Game Loop
     # --------------------------------------------
-    
-    # Redraw the Background
-    screen.blit(bg, (0,0))
-    
-    # Redraw all Groups
-    blockGroup.draw(screen)
-    spawnerGroup.draw(screen)
-    enemyGroup.draw(screen)
-    dyingEnemyGroup.draw(screen)
-    if player.temp_invulnerable:
-        # If we were just hit, we will be blinking
-        if player.blink_visible:
-            # If the blinking is currently in the visible state, then draw the player
+    while gametype == 1:
+        # --------------------------------------------
+        # Event Handling
+        # --------------------------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+
+        # --------------------------------------------
+        # Player: Movement, Collisions and Death
+        # --------------------------------------------
+
+        # Update player based on keyboard input
+        keys_down = pygame.key.get_pressed() # Get a list of all keys pressed right now
+
+        player.update(keys_down, blockGroup, enemyGroup, screen)
+        if player.health <= 0:
+            # Player has died
+            if not player.currently_dying:
+                player.currently_dying = True
+                resetGameTimer = Timer(3.0, resetGame)
+                resetGameTimer.start()    
+                game_label = gamefont.render("Game over! Points: {}".format(player.points),
+                                             1, (0,0,0))
+
+        if player.rect.x < 0 or player.rect.x > screen.get_size()[0]:
+            player.rect.x = screen.get_size()[0]//2
+
+
+        #--------------------------------------------
+        # Enemy Movement    
+        #--------------------------------------------
+        hasSquishedSomeoneAlready = False
+        to_remove = []
+        for e in enemyGroup:
+            squished, punched = e.update(blockGroup, screen, waypointList, player, hasSquishedSomeoneAlready)
+            if squished or punched:
+                to_remove.append(e)
+                if squished:
+                    hasSquishedSomeoneAlready = True
+        for dead_enemy in to_remove:
+            enemyGroup.remove(dead_enemy)
+
+            dyingEnemyGroup.add(dead_enemy)
+            oneAnimFrames = dead_enemy.anims[dead_enemy.cur_anim]['frames_between'] * len(dead_enemy.anims[dead_enemy.cur_anim]['images'])
+            oneAnimTime = 6/7 * oneAnimFrames / clock.get_fps()
+            removeEnemyTimer = Timer(oneAnimTime, dead_enemy.send_to_heaven, [dyingEnemyGroup])
+            removeEnemyTimer.start()
+
+        # Update the animations of dying enemies
+        for e in dyingEnemyGroup:
+            e.animate()
+
+        #---------------------------------------------
+        # Monster Spawning
+        #---------------------------------------------
+        for spawner in spawnerGroup:
+            if spawner.busy_spawning_basic == 0:
+                basic_time = Timer(spawner.basic_spawn_time, spawner.spawn_basic, [enemyGroup])
+                basic_time.start()
+                spawner.busy_spawning_basic = 1
+
+            if spawner.busy_spawning_spiky == 0:
+                spiky_time = Timer(spawner.spiky_spawn_time, spawner.spawn_spiky, [enemyGroup])
+                spiky_time.start()
+                spawner.busy_spawning_spiky = 1
+        # --------------------------------------------
+        # Redraw everything on the screen
+        # --------------------------------------------
+
+        # Redraw the Background
+        screen.blit(bg, (0,0))
+
+        # Redraw all Groups
+        blockGroup.draw(screen)
+        spawnerGroup.draw(screen)
+        enemyGroup.draw(screen)
+        dyingEnemyGroup.draw(screen)
+        if player.temp_invulnerable:
+            # If we were just hit, we will be blinking
+            if player.blink_visible:
+                # If the blinking is currently in the visible state, then draw the player
+                playerGroup.draw(screen)
+        else:
             playerGroup.draw(screen)
-    else:
-        playerGroup.draw(screen)
-    
-    # Draw game text
-    width, height = screen.get_size()
-    screen.blit(game_label, (width/4, height/2))
 
-    # Render text for debug
-    if DEBUG:
-        label = debugfont.render("fps:"+str(int(clock.get_fps()))
-                              +" monsters:"+str(len(enemyGroup))
-                              +" points: " + str(player.points)
-                              +" health: " + str(player.health)
-                              
-                              , 1, (0,0,0))
-        screen.blit(label, (20, 10))
+        # Draw game text
+        width, height = screen.get_size()
+        screen.blit(game_label, (width/4, height/2))
+
+        # Render text for debug
+        if DEBUG:
+            label = debugfont.render("fps:"+str(int(clock.get_fps()))
+                                  +" monsters:"+str(len(enemyGroup))
+                                  +" points: " + str(player.points)
+                                  +" health: " + str(player.health)
+
+                                  , 1, (0,0,0))
+            screen.blit(label, (20, 10))
 
 
-    # Update the display
-    pygame.display.update()
-    
-    # --------------------------------------------
-    # Clock Tick
-    # --------------------------------------------
-    clock.tick(60)
+        # Update the display
+        pygame.display.update()
+
+        # --------------------------------------------
+        # Clock Tick
+        # --------------------------------------------
+        clock.tick(60)
+
