@@ -39,12 +39,16 @@ class Enemy(pygame.sprite.Sprite):
         
         self.on_ground = False
         self.move_speed = 1
-        self.max_move_speed = 2
         self.movecounter = 140
         
         self.currently_dying = False
         
         self.enemy_type = enemytype
+
+        if self.enemy_type == "spiky":
+            self.max_move_speed = 2
+        if self.enemy_type == "basic":
+            self.max_move_speed = random.randint(2,3)
     
     #===========================================================================
     # Animations

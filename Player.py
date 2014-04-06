@@ -75,7 +75,7 @@ class Player(pygame.sprite.Sprite):
         self.punching_left = self.facing_left
         self.punching_time = 1.0
         self.can_punch = True
-        self.punch_cooldown = 2.0
+        self.punch_cooldown = 0.1
         
         self.reset()
         
@@ -89,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         
         # Jumping and base+max speeds
         self.on_ground = False
-        self.jump_speed = 7
+        self.jump_speed = 8
         self.move_speed = 1
         self.max_move_speed = 3
         

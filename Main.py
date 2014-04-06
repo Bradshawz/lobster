@@ -1,5 +1,6 @@
 from sys import exit
 from threading import Timer
+import time 
 
 import pygame
 from pygame.locals import *
@@ -105,6 +106,10 @@ while True:
     # Create a group for dying (non-interactive) enemies
     dyingEnemyGroup = pygame.sprite.Group()
 
+    # Monster spawn times
+    last_called_basic = time.time()
+    last_called_spiky = time.time()
+
     # To be used on game restart or on
     # player death/game over
     def resetGame():
@@ -177,15 +182,7 @@ while True:
         # Monster Spawning
         #---------------------------------------------
         for spawner in spawnerGroup:
-            if spawner.busy_spawning_basic == 0:
-                basic_time = Timer(spawner.basic_spawn_time, spawner.spawn_basic, [enemyGroup])
-                basic_time.start()
-                spawner.busy_spawning_basic = 1
-
-            if spawner.busy_spawning_spiky == 0:
-                spiky_time = Timer(spawner.spiky_spawn_time, spawner.spawn_spiky, [enemyGroup])
-                spiky_time.start()
-                spawner.busy_spawning_spiky = 1
+            spawner.spawn(enemyGroup)
         # --------------------------------------------
         # Redraw everything on the screen
         # --------------------------------------------
@@ -228,4 +225,3 @@ while True:
         # Clock Tick
         # --------------------------------------------
         clock.tick(60)
-
