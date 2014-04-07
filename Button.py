@@ -29,7 +29,11 @@ class Button(pygame.sprite.Sprite):
         self.image = self.images[self.button_state]
 
         # Fetch the rectangle object that has the dimensions of the image
-        self.rect = self.image.get_rect(center=(pos_x, pos_y))
+        self.rect = self.image.get_rect()
+        self.rect.x = pos_x
+        self.rect.y = pos_y
+        
+        print(self.rect.height)
 
         # If a button is clicked, what game mode to change it to
         self.mode_change = mode_change

@@ -45,21 +45,37 @@ bg = bg.convert()
 bg.fill(pygame.Color(255,255,255))
 
 # Set the window title and game font
-pygame.display.set_caption("Horde")
+pygame.display.set_caption("Don't Get Cooked")
+pygame.display.set_icon(pygame.image.load("images/lobster_standing.png").convert_alpha())
 
 # Make a button group
 menubuttonGroup = pygame.sprite.Group()
 highbuttonGroup = pygame.sprite.Group()
 gamebuttonGroup = pygame.sprite.Group()
-start_button = Button(["images/start_0.png","images/start_1.png", "images/start_2.png"], screen.get_size()[0]/2, 100, 1, 0)
-highscores_button = Button(["images/high_0.png","images/high_1.png", "images/high_2.png"], screen.get_size()[0]/2, 200, 2, 0)
-exit_button = Button(["images/exit_0.png","images/exit_1.png", "images/exit_2.png"], screen.get_size()[0]/2, 300, 3, 0)
-go_main_button = Button(["images/start_0.png", "images/start_1.png", "images/start_2.png"], 500, 400, 0, 2)
+button_leftalign = screen.get_size()[0]/15
+button_spacing = 65
+button_base_y = screen.get_size()[1] - button_spacing*3
+
+start_button = Button(["images/start_0.png","images/start_1.png", "images/start_2.png"], 
+                      button_leftalign, button_base_y + button_spacing*0, 
+                      1, 0)
+highscores_button = Button(["images/high_0.png","images/high_1.png", "images/high_2.png"], 
+                           button_leftalign, button_base_y + button_spacing*1, 
+                           2, 0)
+exit_button = Button(["images/exit_0.png","images/exit_1.png", "images/exit_2.png"], 
+                     button_leftalign, button_base_y + button_spacing*2, 
+                     3, 0)
+back_from_highscores_button = Button(["images/back_0.png", "images/back_1.png", "images/back_2.png"], 
+                        500, 400,
+                        0, 2)
 start_button.add(menubuttonGroup)
 highscores_button.add(menubuttonGroup)
 exit_button.add(menubuttonGroup)
-go_main_button.add(highbuttonGroup)
+back_from_highscores_button.add(highbuttonGroup)
 gametype = 0
+
+# Make a menu splash background
+menu_bg = pygame.image.load("images/menu_bg.png").convert()
 
 
 while True:
@@ -83,7 +99,7 @@ while True:
                 gametype = button.button_update(pygame.mouse.get_pos(), mouse_pressed[0])
 
         # Redraw the Background
-        screen.blit(bg, (0,0))
+        screen.blit(menu_bg, (0,0))
 
         # Redraw buttons
         menubuttonGroup.draw(screen)
@@ -130,14 +146,14 @@ while True:
         screen.blit(bg, (0,0))
 
         # Draw Highscores
-        screen.blit(titlefont.render("HIGHSCORES", 1, (20,80,200)),(screen.get_size()[0]/4, 20))
-        screen.blit(gamefont.render("Points:", 1, (0,0,0)),(screen.get_size()[0]/8-40, 60+font_size))            
-        screen.blit(gamefont.render("Name:", 1, (0,0,0)),(screen.get_size()[0]/2-40, 60+font_size))
+        screen.blit(titlefont.render("HIGHSCORES", 1, (20,80,200)),(screen.get_size()[0]/4, 5))
+        screen.blit(gamefont.render("Points:", 1, (0,0,0)),(screen.get_size()[0]/8-40, 80+font_size))            
+        screen.blit(gamefont.render("Name:", 1, (0,0,0)),(screen.get_size()[0]/2-40, 80+font_size))
 
         for score, name in seperate_score_list:
-            screen.blit(gamefont.render(score, 1, (0,0,0)),(screen.get_size()[0]/8+40, 80+font_size))
-            screen.blit(gamefont.render(name, 1, (0,0,0)),(screen.get_size()[0]/2+40, 80+font_size))
-            font_size += 20
+            screen.blit(gamefont.render(score, 1, (0,0,0)),(screen.get_size()[0]/8+40, 110+font_size))
+            screen.blit(gamefont.render(name, 1, (0,0,0)),(screen.get_size()[0]/2+40, 110+font_size))
+            font_size += 25
 
         # Redraw buttons
         highbuttonGroup.draw(screen)
