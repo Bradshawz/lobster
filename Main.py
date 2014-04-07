@@ -92,10 +92,6 @@ while True:
         pygame.display.update()
 
 
-    if gametype == 3:
-        exit()
-
-
     if gametype == 2:
         scores = ""
         highscore_list = open("highscores.txt", "r")
@@ -106,6 +102,10 @@ while True:
         seperate_score_list = []
         for string in score_list:
             seperate_score_list.append(string.split())
+    
+    if gametype == 3:
+        exit()
+    
     #------------------------
     # HIGH SCORE SCREEN
     #------------------------

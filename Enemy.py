@@ -192,9 +192,14 @@ class Enemy(pygame.sprite.Sprite):
     def player_collide_spiky(self, player):
         squished, punched = False, False
         if pygame.sprite.collide_rect(self, player):
-            if player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top:
+            if (player.vel_y > 0 and player.rect.bottom - player.vel_y < self.rect.top
+                and not player.temp_invulnerable):
                 # Bounce off the enemy (spiky can't be killed by a jump)
                 player.vel_y = player.jump_speed/-1.5
+                
+                # We've been hit!
+                if not player.currently_dying:
+                    player.health -= 1
                 
             elif player.punching:
                 # Player got us, arggghh
