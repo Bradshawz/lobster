@@ -25,6 +25,9 @@ class Map:
      ** modify tiles     
         =    platform
         -    platform that you can jump up through
+        s    enemy spawner
+        w    waypoint for enemies to path towards
+        p    player start location (there should be only one)
     """
     char_to_filename = {'=' : 'images/block_blue.png',
                         '-' : 'images/block_yellow.png',
