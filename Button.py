@@ -38,6 +38,9 @@ class Button(pygame.sprite.Sprite):
         self.current_mode = current_mode
 
     def button_update(self, mouse_position, left_mouse):
+        """
+        update the state of a button
+        """
         self.mouse_collision(mouse_position)
         mode = self.button_pressed(left_mouse)
         self.button_click_down(left_mouse)
@@ -58,6 +61,9 @@ class Button(pygame.sprite.Sprite):
             
             
     def button_click_down(self, left_mouse):
+        """
+        Check if the user pressed down on the button
+        """
         if self.button_state == 1:
             if left_mouse == True:
                 self.button_state = 2
@@ -65,6 +71,10 @@ class Button(pygame.sprite.Sprite):
         self.image = self.images[self.button_state]
         
     def button_pressed(self, left_mouse):
+        """
+        Check if the user finished the
+        mouse click over the button
+        """
         if self.button_state == 2:
             if left_mouse == False:
                 self.button_state = 0

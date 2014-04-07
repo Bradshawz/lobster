@@ -5,6 +5,7 @@ import time
 import pygame
 from pygame.locals import *
 
+from Manage_highscores import *
 from Button import *
 from Block import *
 from Enemy import *
@@ -35,6 +36,7 @@ clock = pygame.time.Clock()
 # Initialize fonts for printing to screen
 debugfont = pygame.font.SysFont("monospace", 15)
 gamefont = pygame.font.SysFont("comicsansms",30)
+titlefont = pygame.font.SysFont("comicsansms", 60)
 game_label = gamefont.render("", 1, (0,0,0))
 
 # Create a white background
@@ -46,13 +48,17 @@ bg.fill(pygame.Color(255,255,255))
 pygame.display.set_caption("Horde")
 
 # Make a button group
-buttonGroup = pygame.sprite.Group()
+menubuttonGroup = pygame.sprite.Group()
+highbuttonGroup = pygame.sprite.Group()
+gamebuttonGroup = pygame.sprite.Group()
 start_button = Button(["images/start_0.png","images/start_1.png", "images/start_2.png"], screen.get_size()[0]/2, 100, 1, 0)
-highscores_button = Button(["images/high_0.png","images/high_1.png", "images/high_2.png"], screen.get_size()[0]/2, 200, 1, 0)
-exit_button = Button(["images/exit_0.png","images/exit_1.png", "images/exit_2.png"], screen.get_size()[0]/2, 300, 1, 0)
-start_button.add(buttonGroup)
-highscores_button.add(buttonGroup)
-exit_button.add(buttonGroup)
+highscores_button = Button(["images/high_0.png","images/high_1.png", "images/high_2.png"], screen.get_size()[0]/2, 200, 2, 0)
+exit_button = Button(["images/exit_0.png","images/exit_1.png", "images/exit_2.png"], screen.get_size()[0]/2, 300, 3, 0)
+go_main_button = Button(["images/start_0.png", "images/start_1.png", "images/start_2.png"], 500, 400, 0, 2)
+start_button.add(menubuttonGroup)
+highscores_button.add(menubuttonGroup)
+exit_button.add(menubuttonGroup)
+go_main_button.add(highbuttonGroup)
 gametype = 0
 
 
@@ -72,7 +78,7 @@ while True:
         mouse_pressed = pygame.mouse.get_pressed()
 
         # Update buttons based on mouse input
-        for button in buttonGroup:
+        for button in menubuttonGroup:
             if gametype == 0:
                 gametype = button.button_update(pygame.mouse.get_pos(), mouse_pressed[0])
 
@@ -80,47 +86,104 @@ while True:
         screen.blit(bg, (0,0))
 
         # Redraw buttons
-        buttonGroup.draw(screen)
+        menubuttonGroup.draw(screen)
 
         # Update the display
         pygame.display.update()
 
-    # Create the map
-    game_map = Map("getonmy.lvl")
 
-    blockGroup = pygame.sprite.Group()
-    blockGroup.add([block for block in game_map.get_blocks()])
+    if gametype == 3:
+        exit()
 
-    spawnerGroup = pygame.sprite.Group()
-    spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
 
-    waypointList = game_map.get_waypoints()
+    if gametype == 2:
+        scores = ""
+        highscore_list = open("highscores.txt", "r")
+        for line in highscore_list:
+            scores += line
+        highscore_list.close()
+        score_list = scores.splitlines()
+        seperate_score_list = []
+        for string in score_list:
+            seperate_score_list.append(string.split())
+    #------------------------
+    # HIGH SCORE SCREEN
+    #------------------------
+    while gametype == 2:
 
-    # Create the player
-    playerGroup = pygame.sprite.GroupSingle() # Create the Group
-    player = Player(game_map.get_player_pos()) # Create the player Sprite
-    player.add(playerGroup) # Add the player Sprite to the Group
+        # --------------------------------------------
+        # Event Handling
+        # --------------------------------------------
+        font_size = 0
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+        # Get mouse buttons pressed
+        mouse_pressed = pygame.mouse.get_pressed()
 
-    # Create an enemy group
-    enemyGroup = pygame.sprite.Group()
-    # Create a group for dying (non-interactive) enemies
-    dyingEnemyGroup = pygame.sprite.Group()
+        # Update buttons based on mouse input
+        for button in highbuttonGroup:
+            if gametype == 2:
+                gametype = button.button_update(pygame.mouse.get_pos(), mouse_pressed[0])
+        
+        # Redraw the Background
+        screen.blit(bg, (0,0))
 
-    # Monster spawn times
-    last_called_basic = time.time()
-    last_called_spiky = time.time()
+        # Draw Highscores
+        screen.blit(titlefont.render("HIGHSCORES", 1, (20,80,200)),(screen.get_size()[0]/4, 20))
+        screen.blit(gamefont.render("Points:", 1, (0,0,0)),(screen.get_size()[0]/8-40, 60+font_size))            
+        screen.blit(gamefont.render("Name:", 1, (0,0,0)),(screen.get_size()[0]/2-40, 60+font_size))
 
-    # To be used on game restart or on
-    # player death/game over
+        for score, name in seperate_score_list:
+            screen.blit(gamefont.render(score, 1, (0,0,0)),(screen.get_size()[0]/8+40, 80+font_size))
+            screen.blit(gamefont.render(name, 1, (0,0,0)),(screen.get_size()[0]/2+40, 80+font_size))
+            font_size += 20
+
+        # Redraw buttons
+        highbuttonGroup.draw(screen)
+
+        # Update the display
+        pygame.display.update()
+        
+
+    # Initialize game
+    if gametype == 1:
+
+        # Create the map
+        game_map = Map("getonmy.lvl")
+
+        blockGroup = pygame.sprite.Group()
+        blockGroup.add([block for block in game_map.get_blocks()])
+
+        spawnerGroup = pygame.sprite.Group()
+        spawnerGroup.add([spawner for spawner in game_map.get_spawner()])
+        
+        waypointList = game_map.get_waypoints()
+    
+        # Create the player
+        playerGroup = pygame.sprite.GroupSingle() # Create the Group
+        player = Player(game_map.get_player_pos()) # Create the player Sprite
+        player.add(playerGroup) # Add the player Sprite to the Group
+
+        # Create an enemy group
+        enemyGroup = pygame.sprite.Group()
+        # Create a group for dying (non-interactive) enemies
+        dyingEnemyGroup = pygame.sprite.Group()
+
+        # Monster spawn times
+        last_called_basic = time.time()
+        last_called_spiky = time.time()
+
+        # To be used on game restart or on
+        # player death/game over
     def resetGame():
         global game_label # using the GLOBAL game_label
         game_label = gamefont.render("", 1, (0,0,0))
         blockGroup.empty()
         spawnerGroup.empty()
-        playerGroup.empty()
         enemyGroup.empty()
         global gametype
-        gametype = 0
+        gametype = 4
 
     # --------------------------------------------
     # Main Game Loop
@@ -225,3 +288,42 @@ while True:
         # Clock Tick
         # --------------------------------------------
         clock.tick(60)
+
+
+
+    if gametype == 4:
+        name = ""
+
+    #--------------------------------
+    # Enter name for highscore
+    #--------------------------------
+    while gametype == 4:
+        
+        # --------------------------------------------
+        # Event Handling
+        # --------------------------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if len(name) < 12:
+                    if event.unicode.isalpha():
+                        name += event.unicode
+                if event.key == K_BACKSPACE:
+                    name = name[:-1]
+                if event.key == K_RETURN:
+                    manage_highscore(player, name)
+                    playerGroup.empty()
+                    gametype = 0
+                
+            if event.type == pygame.QUIT:
+                exit()
+                
+        label2 = gamefont.render("Please enter your name: " + name, 1, (0,0,0))
+
+
+
+        # Redraw the Background
+        screen.blit(bg, (0,0))
+
+        screen.blit(label2, (screen.get_size()[0]/8, screen.get_size()[1]/3))
+
+        pygame.display.update()

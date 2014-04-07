@@ -46,9 +46,9 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_type = enemytype
 
         if self.enemy_type == "spiky":
-            self.max_move_speed = 2
+            self.max_move_speed = 1
         if self.enemy_type == "basic":
-            self.max_move_speed = random.randint(2,3)
+            self.max_move_speed = random.randint(1,2)
     
     #===========================================================================
     # Animations
@@ -308,23 +308,23 @@ class Enemy(pygame.sprite.Sprite):
             else:
                 self.move = 0
                 return
-
+        
         #Find waypoints on same floor
         for w in waypoint:
-            if abs(w[1] - self.rect.top) < 40:
+            if abs(w[1] - self.rect.bottom) < 20:
                 wlist.append(w)
         #Find closest waypoint
         for c in wlist:
             if abs(c[0]-self.rect.center[0]) < closestval:
                 closestval = abs(c[0]-self.rect.center[0])
                 closewaypoint = c
-        if self.rect.right < closewaypoint[0]:
+        if self.rect.left < closewaypoint[0]:
             self.move = 1
             return
         if self.rect.right > closewaypoint[0]:
             self.move = 0
             return         
-        
+     
     def  random_movement(self):
         """
         Move in a random direction

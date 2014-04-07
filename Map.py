@@ -78,14 +78,14 @@ class Map:
 
                     #------------------------------------
                     # Spawner and Spawner Characteristics
-                    # spawnlist -> [dict{spawtype:spawntime}]
+                    # spawnlist -> [dict{spawtype:[min_spawn_time, max_spawn_time}]
                     # s_n is the spawner number, topleft
                     # to bottom right
                     #------------------------------------
-                    spawn_list = [{"basic":4, "spiky":41},
-                                  {"basic":9, "spiky":20},
-                                  {"basic":12, "spiky":28},
-                                  {"basic":14, "spiky":18}]
+                    spawn_list = [{"basic":[5,10], "spiky":[20,30]},
+                                  {"basic":[5,10], "spiky":[20,30]},
+                                  {"basic":[5,10], "spiky":[20,30]},
+                                  {"basic":[5,15], "spiky":[20,30]}]
                     if char == 's':
                         spawner = Spawner(self.char_to_filename[char],
                                           cur_x, cur_y,
