@@ -21,7 +21,7 @@ def manage_highscore(player, name):
 
     for line in list:
         line[0] = str(line[0])
-        if score_total < 15:
+        if score_total < 12:
             highscore_list.write(line[0] + " " + line[1] + "\n")
             score_total += 1
 

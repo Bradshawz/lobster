@@ -3,6 +3,7 @@ from threading import Timer
 import time 
 
 import pygame
+from pygame import Rect
 from pygame.locals import *
 
 from Manage_highscores import *
@@ -12,6 +13,7 @@ from Enemy import *
 from Map import *
 from Player import *
 from Spawner import *
+from HealthBar import HealthBar
 
 # Importing Timer to schedule things
 # Example use:
@@ -185,6 +187,13 @@ while True:
         enemyGroup = pygame.sprite.Group()
         # Create a group for dying (non-interactive) enemies
         dyingEnemyGroup = pygame.sprite.Group()
+        
+        # Create the UI
+        uiGroup = pygame.sprite.Group()
+        bar_width = 16
+        health_bar = HealthBar(3, Rect((screen.get_size()[0]-bar_width, 0), (bar_width, screen.get_size()[1])))
+        health_bar.add(uiGroup)
+        point_display = 1 #TODO add points display label
 
         # Monster spawn times
         last_called_basic = time.time()
@@ -281,6 +290,11 @@ while True:
                 playerGroup.draw(screen)
         else:
             playerGroup.draw(screen)
+        
+        # Update and draw UI
+        if player.health != health_bar.get_health():
+            health_bar.set_current_health(player.health)
+        uiGroup.draw(screen)
 
         # Draw game text
         width, height = screen.get_size()
