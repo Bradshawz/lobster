@@ -4,6 +4,8 @@ import time
 import pygame
 from pygame.locals import * # For keypress variables
 
+from SFX import SFX
+
 from Manage_highscores import *
 from Button import Button
 from Map import Map
@@ -31,6 +33,10 @@ screen = pygame.display.set_mode((608,448),0,24)
 
 # Create a clock to use to hold the framerate constant
 clock = pygame.time.Clock()
+
+# Initialize the audio
+sfx = SFX()
+sfx.play_music()
 
 # Initialize fonts for printing to screen
 debugfont = pygame.font.SysFont("monospace", 15)
