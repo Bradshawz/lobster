@@ -1,18 +1,13 @@
 from sys import exit
-from threading import Timer
-import time 
+import time
 
 import pygame
-from pygame import Rect
-from pygame.locals import *
+from pygame.locals import * # For keypress variables
 
 from Manage_highscores import *
-from Button import *
-from Block import *
-from Enemy import *
-from Map import *
-from Player import *
-from Spawner import *
+from Button import Button
+from Map import Map
+from Player import Player
 from HealthBar import HealthBar
 
 # Importing Timer to schedule things
@@ -25,8 +20,10 @@ from HealthBar import HealthBar
 # }
 # changeImageTimer = Timer(secondsToWait, changeImage, [list_of, parameters])
 # a la http://stackoverflow.com/questions/16578652/threading-timer
+from threading import Timer
+
 # Debug
-DEBUG = True
+DEBUG = False
 
 # Init pygame & create a screen
 pygame.init()
