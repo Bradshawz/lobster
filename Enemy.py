@@ -221,11 +221,11 @@ class Enemy(pygame.sprite.Sprite):
                 # bounce the enemy back
                 self.vel_x *= -6
                 
-            # Set player to be temporarily invulnerable
-            if not player.temp_invulnerable:
-                player.temp_invulnerable = True
-                set_vulnerable_timer = Timer(2.0, player.set_vulnerable)
-                set_vulnerable_timer.start()
+                # Set player to be temporarily invulnerable
+                if not player.temp_invulnerable:
+                    player.temp_invulnerable = True
+                    set_vulnerable_timer = Timer(2.0, player.set_vulnerable)
+                    set_vulnerable_timer.start()
         
         return (squished, punched)
                 
