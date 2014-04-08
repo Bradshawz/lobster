@@ -302,6 +302,7 @@ while True:
         # Draw game text
         width, height = screen.get_size()
         screen.blit(game_label, (width/4, height/2))
+        screen.blit(titlefont.render(str(player.points), 1, (255,140,0)),(screen.get_size()[0]*43/89, 5))
 
         # Render text for debug
         if DEBUG:
